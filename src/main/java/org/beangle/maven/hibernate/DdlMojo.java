@@ -21,11 +21,12 @@ import org.beangle.maven.util.Projects;
  * 
  * @author chii
  */
-@Mojo(name = "gen-ddl", defaultPhase = LifecyclePhase.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "gen-ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DdlMojo extends AbstractMojo {
 
   @Component
   private MavenProject project;
+
   @Component
   private Settings settings;
 

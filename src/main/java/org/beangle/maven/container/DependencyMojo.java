@@ -20,7 +20,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * @author chaostone
  */
-@Mojo(name = "gen-dependency", defaultPhase = LifecyclePhase.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "gen-dependency", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DependencyMojo extends AbstractMojo {
 
   @Component
@@ -30,7 +30,7 @@ public class DependencyMojo extends AbstractMojo {
 
   public final void execute() throws MojoExecutionException, MojoFailureException {
     if (!project.getPackaging().equals("war")) {
-      getLog().warn("Container Dependency Generation supports only war project!");
+      getLog().info("Container Dependency Generation supports only war project!");
       return;
     }
     String folder = project.getBuild().getOutputDirectory() + "/META-INF";
