@@ -9,7 +9,7 @@
   <artifactId>beangle-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Beangle Maven Plugin</name>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
 
   <properties>
     <mvnVersion>3.1.1</mvnVersion>
