@@ -46,37 +46,44 @@ public class CfgMojo extends AbstractMojo {
           break;
         }
       }
-      if (cfgResourceExists) dir = project.getBuild().getOutputDirectory() + "/../generated-resources";
+      if (cfgResourceExists) {
+        getLog().info("Hibernate.cfg.xml exists,so generation will use generated-resources.");
+        dir = project.getBuild().getOutputDirectory() + "/../generated-resources";
+      }
     }
     List<String> hbms = new ArrayList<String>();
     try {
       searchHbm(project.getBuild().getOutputDirectory(), hbms);
-      File folder = new File(dir);
-      folder.mkdirs();
-      File cfg = new File(folder.getCanonicalPath() + File.separator + fileName);
-      cfg.createNewFile();
-      String template = read(this.getClass().getResource("/hibernate.cfg.xml.ftl"));
-      StringBuilder mappings = new StringBuilder(100 * hbms.size());
-      Collections.sort(hbms);
-      String last = null;
-      for (String hbmfile : hbms) {
-        String relative = hbmfile.substring(project.getBuild().getOutputDirectory().length() + 1);
-        relative.replace('\\', '/');
-        if (null != last && !last.startsWith(relative.substring(0, relative.lastIndexOf("/")))) {
-          mappings.append('\n');
+      if (hbms.isEmpty()) {
+        getLog().info("No hbm.xml files founded,Hibernate.cfg.xml generation was skipped.");
+      } else {
+        File folder = new File(dir);
+        folder.mkdirs();
+        File cfg = new File(folder.getCanonicalPath() + File.separator + fileName);
+        cfg.createNewFile();
+        String template = read(this.getClass().getResource("/hibernate.cfg.xml.ftl"));
+        StringBuilder mappings = new StringBuilder(100 * hbms.size());
+        Collections.sort(hbms);
+        String last = null;
+        for (String hbmfile : hbms) {
+          String relative = hbmfile.substring(project.getBuild().getOutputDirectory().length() + 1);
+          relative.replace('\\', '/');
+          if (null != last && !last.startsWith(relative.substring(0, relative.lastIndexOf("/")))) {
+            mappings.append('\n');
+          }
+          mappings.append("    <mapping resource=\"").append(relative).append("\"/>\n");
+          last = relative;
         }
-        mappings.append("    <mapping resource=\"").append(relative).append("\"/>\n");
-        last = relative;
+        // delete last \n
+        if (mappings.length() > 0) mappings.deleteCharAt(mappings.length() - 1);
+
+        Writer writer = new FileWriter(cfg);
+        writer.append(template.replace("${mappings}", mappings.toString()));
+        writer.close();
+        getLog().info("Generated " + hbms.size() + " mappings in " + cfg.getCanonicalPath());
       }
-      // delete last \n
-      if (mappings.length() > 0) mappings.deleteCharAt(mappings.length() - 1);
-
-      Writer writer = new FileWriter(cfg);
-      writer.append(template.replace("${mappings}", mappings.toString()));
-      writer.close();
-      getLog().info("Generated " + hbms.size() + " mappings in " + cfg.getCanonicalPath());
     } catch (IOException e) {
-
+      throw new RuntimeException(e);
     }
   }
 
