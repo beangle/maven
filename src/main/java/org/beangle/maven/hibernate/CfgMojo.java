@@ -45,7 +45,7 @@ public class CfgMojo extends AbstractMojo {
       for (String hbmfile : hbms) {
         String relative = hbmfile.substring(project.getBuild().getOutputDirectory().length() + 1);
         relative.replace('\\', '/');
-        mappings.append("       <mapping resource=\"").append(relative).append("\"/>\n");
+        mappings.append("    <mapping resource=\"").append(relative).append("\"/>\n");
       }
       // delete last \n
       if (mappings.length() > 0) mappings.deleteCharAt(mappings.length() - 1);
