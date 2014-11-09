@@ -46,7 +46,10 @@ public class CfgMojo extends AbstractMojo {
           break;
         }
       }
-      if (cfgResourceExists) dir = project.getBuild().getOutputDirectory() + "/../generated-resources";
+      if (cfgResourceExists) {
+        getLog().info("Hibernate.cfg.xml exists,so generation will use generated-resources.");
+        dir = project.getBuild().getOutputDirectory() + "/../generated-resources";
+      }
     }
     List<String> hbms = new ArrayList<String>();
     try {
