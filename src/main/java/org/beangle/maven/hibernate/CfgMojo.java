@@ -14,38 +14,59 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name = "gen-hibernate-cfg", defaultPhase = LifecyclePhase.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "gen-hibernate-cfg", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class CfgMojo extends AbstractMojo {
   @Component
   private MavenProject project;
 
   private final String fileName = "hibernate.cfg.xml";
 
+  @Parameter(property = "dir")
+  private String dir;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    if (null == dir) {
+      dir = project.getBuild().getOutputDirectory() + "/META-INF";
+      boolean cfgResourceExists = false;
+      for (Resource r : project.getBuild().getResources()) {
+        if (new File(r.getDirectory() + "/META-INF/" + fileName).exists()) {
+          cfgResourceExists = true;
+          break;
+        }
+      }
+      if (cfgResourceExists) dir = project.getBuild().getOutputDirectory() + "/../generated-resources";
+    }
     List<String> hbms = new ArrayList<String>();
     try {
       searchHbm(project.getBuild().getOutputDirectory(), hbms);
-      File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources");
+      File folder = new File(dir);
       folder.mkdirs();
       File cfg = new File(folder.getCanonicalPath() + File.separator + fileName);
       cfg.createNewFile();
       String template = read(this.getClass().getResource("/hibernate.cfg.xml.ftl"));
       StringBuilder mappings = new StringBuilder(100 * hbms.size());
       Collections.sort(hbms);
+      String last = null;
       for (String hbmfile : hbms) {
         String relative = hbmfile.substring(project.getBuild().getOutputDirectory().length() + 1);
         relative.replace('\\', '/');
-        mappings.append("       <mapping resource=\"").append(relative).append("\"/>\n");
+        if (null != last && !last.startsWith(relative.substring(0, relative.lastIndexOf("/")))) {
+          mappings.append('\n');
+        }
+        mappings.append("    <mapping resource=\"").append(relative).append("\"/>\n");
+        last = relative;
       }
       // delete last \n
       if (mappings.length() > 0) mappings.deleteCharAt(mappings.length() - 1);
@@ -53,7 +74,7 @@ public class CfgMojo extends AbstractMojo {
       Writer writer = new FileWriter(cfg);
       writer.append(template.replace("${mappings}", mappings.toString()));
       writer.close();
-      getLog().info("Generated " + hbms.size() + " hbms in " + cfg.getCanonicalPath());
+      getLog().info("Generated " + hbms.size() + " mappings in " + cfg.getCanonicalPath());
     } catch (IOException e) {
 
     }

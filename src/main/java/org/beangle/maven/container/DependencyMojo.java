@@ -3,6 +3,9 @@ package org.beangle.maven.container;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -36,15 +39,20 @@ public class DependencyMojo extends AbstractMojo {
     file.delete();
     try {
       file.createNewFile();
-      StringBuilder sb = new StringBuilder();
+      List<String> provideds = new ArrayList<String>();
+
       for (Artifact artifact : project.getArtifacts()) {
         String groupId = artifact.getGroupId();
         String str = artifact.toString();
         if (artifact.getScope().equals("provided") && !groupId.startsWith("org.scala-lang")
             && !groupId.startsWith("javax.servlet")) {
-          sb.append(str.replace(":jar", "").replace(":provided", ""));
-          sb.append("\n");
+          provideds.add(str.replace(":jar", "").replace(":provided", ""));
         }
+      }
+      StringBuilder sb = new StringBuilder();
+      Collections.sort(provideds);
+      for (String one : provideds) {
+        sb.append(one).append('\n');
       }
       FileWriter fw = new FileWriter(file);
       fw.write(sb.toString());
