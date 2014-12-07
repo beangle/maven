@@ -14,6 +14,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
@@ -25,6 +26,12 @@ public class DependencyMojo extends AbstractMojo {
 
   @Component
   private MavenProject project;
+
+  @Parameter(property = "dependenciesIncludes")
+  private String dependencyIncludes = "*:*";
+
+  @Parameter(property = "dependencyExcludes")
+  private String dependencyExcludes;
 
   private final String fileName = "container.dependencies";
 
@@ -40,14 +47,42 @@ public class DependencyMojo extends AbstractMojo {
     try {
       file.createNewFile();
       List<String> provideds = new ArrayList<String>();
+      List<Dependency> excludes = convert(dependencyExcludes);
+      List<Dependency> includes = convert(dependencyIncludes);
 
       for (Artifact artifact : project.getArtifacts()) {
         String groupId = artifact.getGroupId();
         String str = artifact.toString();
-        if (artifact.getScope().equals("provided") && !groupId.startsWith("org.scala-lang")
-            && !groupId.startsWith("javax.servlet")) {
-          provideds.add(str.replace(":jar", "").replace(":provided", ""));
+        String scope = artifact.getScope();
+        Dependency curr = new Dependency(groupId, artifact.getArtifactId());
+
+        boolean scopeMatched = scope.equals("provided");
+        if (!scopeMatched && !artifact.getVersion().endsWith("SNAPSHOT")) {
+          if (scope.equals("runtime") || scope.equals("compile")) scopeMatched = true;
         }
+
+        boolean included = false;
+        if (scopeMatched) {
+          for (Dependency d : includes) {
+            if (d.matches(curr)) {
+              included = true;
+              break;
+            }
+          }
+
+          if (groupId.startsWith("org.scala-lang") || groupId.startsWith("javax.servlet")) included = false;
+
+          if (included) {
+            for (Dependency d : excludes) {
+              if (d.matches(curr)) {
+                included = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if (scopeMatched && included) provideds.add(str.replace(":jar", "").replace(":" + scope, ""));
       }
       StringBuilder sb = new StringBuilder();
       Collections.sort(provideds);
@@ -62,4 +97,25 @@ public class DependencyMojo extends AbstractMojo {
       e.printStackTrace();
     }
   }
+
+  private List<Dependency> convert(String dependencies) {
+    if (dependencies == null) return Collections.emptyList();
+    else {
+      List<Dependency> results = new ArrayList<Dependency>();
+      getLog().info(dependencies);
+      String[] array = dependencies.replace("\n", "").replace("\r", "").replace(";", ",").split(",");
+      for (String a : array) {
+        if (a.length() >= 0) {
+          int commaIdx = a.indexOf(":");
+          if (-1 == commaIdx) {
+            getLog().warn("Invalid dependency:" + a);
+          } else {
+            results.add(new Dependency(a.substring(0, commaIdx), a.substring(commaIdx + 1)));
+          }
+        }
+      }
+      return results;
+    }
+  }
+
 }
