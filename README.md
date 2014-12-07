@@ -19,7 +19,7 @@ Beangle Maven 插件是配合Beangle框架提供的辅助工具。
         <plugin>
           <groupId>org.beangle.maven</groupId>  
           <artifactId>beangle-maven-plugin</artifactId>  
-          <version>0.1.0-SNAPSHOT</version>
+          <version>0.1.22
           <executions>
             <execution>
               <id>generate</id>
