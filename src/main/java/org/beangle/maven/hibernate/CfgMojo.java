@@ -94,11 +94,29 @@ public class CfgMojo extends AbstractMojo {
       if (child.isFile() && child.exists() && name.endsWith("hbm.xml")) {
         results.add(folder + File.separatorChar + name);
       } else {
-        if (child.isDirectory() && !Files.isSymbolicLink(child.toPath())) {
+        if (child.isDirectory() && !isSymbolicLink(child)) {
           searchHbm(child.getCanonicalPath(), results);
         }
       }
     }
+  }
+
+  /**
+   * Determine file is symbolic link or not.
+   * FIXME Using Files.isSymbolicLink(file.getPath) when using JDK 1.7
+   * @param file
+   * @return
+   * @throws IOException
+   */
+  private boolean isSymbolicLink(File file) throws IOException {
+    File canon;
+    if (file.getParent() == null) {
+      canon = file;
+    } else {
+      File canonDir = file.getParentFile().getCanonicalFile();
+      canon = new File(canonDir, file.getName());
+    }
+    return !canon.getCanonicalFile().equals(canon.getAbsoluteFile());
   }
 
   private String read(URL url) throws IOException {
