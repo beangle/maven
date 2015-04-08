@@ -1,3 +1,21 @@
+/*
+ * Beangle, Agile Development Scaffold and Toolkit
+ *
+ * Copyright (c) 2005-2015, Beangle Software.
+ *
+ * Beangle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Beangle is distributed in the hope that it will be useful.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.beangle.maven.util;
 
 import java.io.File;
@@ -14,9 +32,9 @@ public class Projects {
 
   static {
     add("org.scala", "scala-library", "2.11.6");
-    add("org.beangle.commons", "beangle-commons-core", "4.2.4-SNAPSHOT");
-    add("org.beangle.data", "beangle-data-model", "4.1.11-SNAPSHOT");
-    add("org.beangle.data", "beangle-data-jpa", "4.1.11-SNAPSHOT");
+    add("org.beangle.commons", "beangle-commons-core", "4.2.4");
+    add("org.beangle.data", "beangle-data-model", "4.2.1");
+    add("org.beangle.data", "beangle-data-jpa", "4.2.1");
 
     add("org.hibernate", "hibernate-core", "4.3.1.Final");
     add("org.jboss.logging", "jboss-logging", "3.1.3.GA");
