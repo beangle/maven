@@ -1,3 +1,21 @@
+/*
+ * Beangle, Agile Development Scaffold and Toolkit
+ *
+ * Copyright (c) 2005-2015, Beangle Software.
+ *
+ * Beangle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Beangle is distributed in the hope that it will be useful.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.beangle.maven.hibernate;
 
 import java.io.BufferedReader;
@@ -38,14 +56,16 @@ public class DdlMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    String dialectStr = getDialect();
     String classPath = Projects.classpath(project, settings.getLocalRepository());
-    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl");
+    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl/"
+        + dialectStr.toLowerCase() + "/");
     folder.mkdirs();
     try {
       getLog().info("Hibernate DDl generating in " + folder.getCanonicalPath());
       ProcessBuilder pb = new ProcessBuilder("java", "-cp", classPath.toString(),
-          "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialect + "Dialect",
-          folder.getCanonicalPath(), locale);
+          "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialectStr
+              + "Dialect", folder.getCanonicalPath(), locale);
       getLog().debug(pb.command().toString());
       pb.redirectErrorStream(true);
       Process pro = pb.start();
@@ -59,5 +79,11 @@ public class DdlMojo extends AbstractMojo {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private String getDialect() {
+    String d = System.getProperty("beangle.dialect");
+    if (d != null && d.length() > 0) return d;
+    else return dialect;
   }
 }
