@@ -56,14 +56,16 @@ public class DdlMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    String dialectStr = getDialect();
     String classPath = Projects.classpath(project, settings.getLocalRepository());
-    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl");
+    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl/"
+        + dialectStr.toLowerCase() + "/");
     folder.mkdirs();
     try {
       getLog().info("Hibernate DDl generating in " + folder.getCanonicalPath());
       ProcessBuilder pb = new ProcessBuilder("java", "-cp", classPath.toString(),
-          "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialect + "Dialect",
-          folder.getCanonicalPath(), locale);
+          "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialectStr
+              + "Dialect", folder.getCanonicalPath(), locale);
       getLog().debug(pb.command().toString());
       pb.redirectErrorStream(true);
       Process pro = pb.start();
@@ -77,5 +79,11 @@ public class DdlMojo extends AbstractMojo {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private String getDialect() {
+    String d = System.getProperty("beangle.dialect");
+    if (d != null && d.length() > 0) return d;
+    else return dialect;
   }
 }
