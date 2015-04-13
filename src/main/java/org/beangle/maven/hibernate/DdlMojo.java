@@ -56,6 +56,10 @@ public class DdlMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    if (project.getPackaging().equals("pom")) {
+      getLog().info("Ddl Generation doesn't support pom project!");
+      return;
+    }
     String dialectStr = getDialect();
     String classPath = Projects.classpath(project, settings.getLocalRepository());
     File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl/"

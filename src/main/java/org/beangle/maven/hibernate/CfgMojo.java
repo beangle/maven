@@ -55,6 +55,10 @@ public class CfgMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    if (project.getPackaging().equals("pom")) {
+      getLog().info("Hibernate Config Generation doesn't support pom project!");
+      return;
+    }
     if (null == dir) {
       dir = project.getBuild().getOutputDirectory() + "/META-INF";
       boolean cfgResourceExists = false;
@@ -107,6 +111,7 @@ public class CfgMojo extends AbstractMojo {
 
   private void searchHbm(String folder, List<String> results) throws IOException {
     File parent = new File(folder);
+    if (!parent.exists()) return;
     for (String name : parent.list()) {
       File child = new File(folder + File.separatorChar + name);
       if (child.isFile() && child.exists() && name.endsWith("hbm.xml")) {
@@ -122,6 +127,7 @@ public class CfgMojo extends AbstractMojo {
   /**
    * Determine file is symbolic link or not.
    * FIXME Using Files.isSymbolicLink(file.getPath) when using JDK 1.7
+   * 
    * @param file
    * @return
    * @throws IOException
