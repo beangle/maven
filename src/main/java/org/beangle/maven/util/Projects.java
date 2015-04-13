@@ -30,13 +30,14 @@ public class Projects {
 
   private static Map<String, Artifact> dependencies = new HashMap<String, Artifact>();
 
+  public static final String HibernateVersion = "4.3.1.Final";
   static {
     add("org.scala", "scala-library", "2.11.6");
     add("org.beangle.commons", "beangle-commons-core", "4.2.4");
     add("org.beangle.data", "beangle-data-model", "4.2.1");
     add("org.beangle.data", "beangle-data-jpa", "4.2.1");
 
-    add("org.hibernate", "hibernate-core", "4.3.1.Final");
+    add("org.hibernate", "hibernate-core", HibernateVersion);
     add("org.jboss.logging", "jboss-logging", "3.1.3.GA");
     add("org.jboss.logging", "jboss-logging-annotations", "1.2.0.Beta1");
     add("javax.transaction", "jta", "1.1");
@@ -70,13 +71,19 @@ public class Projects {
 
   private static void addToClassPath(StringBuilder classPath, String localRepository, Artifact artifact) {
     classPath.append(File.pathSeparator);
-    classPath.append(localRepository).append("/").append(artifact.getGroupId().replaceAll("\\.", "/"))
-        .append("/").append(artifact.getArtifactId()).append("/").append(artifact.getVersion()).append("/")
-        .append(artifact.getArtifactId()).append("-").append(artifact.getVersion()).append(".jar");
+    classPath.append(getPath(artifact, localRepository));
   }
 
   private static void add(String groupId, String artifactId, String version) {
     Artifact artifact = new DefaultArtifact(groupId, artifactId, version, "runtime", "jar", "", null);
     dependencies.put(artifactId, artifact);
+  }
+
+  public static String getPath(Artifact artifact, String localRepository) {
+    StringBuilder path = new StringBuilder();
+    path.append(localRepository).append("/").append(artifact.getGroupId().replaceAll("\\.", "/")).append("/")
+        .append(artifact.getArtifactId()).append("/").append(artifact.getVersion()).append("/")
+        .append(artifact.getArtifactId()).append("-").append(artifact.getVersion()).append(".jar");
+    return path.toString();
   }
 }
