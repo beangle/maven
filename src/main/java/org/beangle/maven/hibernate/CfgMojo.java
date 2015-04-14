@@ -55,7 +55,8 @@ public class CfgMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (project.getPackaging().equals("pom")) {
-      getLog().info("Hibernate Config Generation doesn't support pom project!");
+      getLog().info(
+          "Hibernate config generation supports jar/war projects,Skip pom projects.");
       return;
     }
     if (null == dir) {

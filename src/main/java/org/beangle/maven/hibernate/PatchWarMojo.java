@@ -29,7 +29,7 @@ public class PatchWarMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (!project.getPackaging().equals("war")) {
-      getLog().info("Hibernate War Patching only support war project!");
+      getLog().info("Hibernate war patching supports war project.Skip jar/pom projects.");
       return;
     }
     boolean findBeangleJpa = false;
