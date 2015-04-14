@@ -1,0 +1,2 @@
+/org/hibernate/action/internal/CollectionUpdateAction.class
+/org/hibernate/collection/spi/PersistentCollection.class

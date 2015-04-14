@@ -42,7 +42,7 @@ public class PatchWarMojo extends AbstractMojo {
     try {
       for (String patch : Patches.files) {
         String target = project.getBuild().getOutputDirectory() + patch;
-        InputStream is = getClass().getResourceAsStream(patch + "file");
+        InputStream is = getClass().getResourceAsStream("/patches" + patch + "file");
         getLog().info("Patching " + patch);
         new File(target.substring(0, target.lastIndexOf("/"))).mkdirs();
         new File(target).createNewFile();
