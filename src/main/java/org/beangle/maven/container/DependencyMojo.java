@@ -58,7 +58,7 @@ public class DependencyMojo extends AbstractMojo {
       getLog().info("Container Dependency Generation supports only war project!");
       return;
     }
-    String folder = project.getBuild().getOutputDirectory() + "/META-INF";
+    String folder = project.getBuild().getOutputDirectory() + "/META-INF/beangle";
     new File(folder).mkdirs();
     File file = new File(folder + "/" + fileName);
     file.delete();
