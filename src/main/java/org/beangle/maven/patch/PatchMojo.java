@@ -1,4 +1,4 @@
-package org.beangle.maven.hibernate;
+package org.beangle.maven.patch;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +21,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.settings.Settings;
+import org.beangle.maven.hibernate.Hibernates;
 import org.beangle.maven.util.Projects;
 
 @Mojo(name = "patch-hibernate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
@@ -32,7 +33,7 @@ public class PatchMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     DefaultArtifact hibernate = new DefaultArtifact("org.hibernate", "hibernate-core",
-        Projects.HibernateVersion, "runtime", "jar", "", null);
+        Hibernates.HibernateVersion, "runtime", "jar", "", null);
     File hibernateFile = new File(Projects.getPath(hibernate, settings.getLocalRepository()));
     if (!hibernateFile.exists()) {
       getLog().info("Cannot find hibernate-core in locale repository ,patching aborted!");

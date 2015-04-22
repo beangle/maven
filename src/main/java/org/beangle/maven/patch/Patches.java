@@ -1,4 +1,4 @@
-package org.beangle.maven.hibernate;
+package org.beangle.maven.patch;
 
 public class Patches {
 

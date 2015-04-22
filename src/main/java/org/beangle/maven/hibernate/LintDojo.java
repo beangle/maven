@@ -28,47 +28,31 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 
-/**
- * Generate Hibernate ddl
- * 
- * @author chii
- */
-@Mojo(name = "hbm2ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class DdlMojo extends AbstractMojo {
-
+@Mojo(name = "hbmlint", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+public class LintDojo extends AbstractMojo {
   @Component
   private MavenProject project;
 
   @Component
   private Settings settings;
 
-  @Parameter(property = "dialect", defaultValue = "PostgreSQL9")
-  private String dialect;
-
-  @Parameter(property = "locale", defaultValue = "zh_CN")
-  private String locale;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (project.getPackaging().equals("pom")) {
-      getLog().info("Ddl generation supports jar/war projects,Skip pom projects.");
+      getLog().info("Hbm Lint supports jar/war projects,Skip pom projects.");
       return;
     }
-    String dialectStr = getDialect();
-    String classPath = Hibernates.classpath(project, settings.getLocalRepository());
-    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl/"
-        + dialectStr.toLowerCase() + "/");
+    File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/");
     folder.mkdirs();
+    String classPath = Hibernates.classpath(project, settings.getLocalRepository());
     try {
-      getLog().info("Hibernate DDl generating in " + folder.getCanonicalPath());
+      getLog().info("Hibernate Hbm lint result in " + folder.getCanonicalPath());
       ProcessBuilder pb = new ProcessBuilder("java", "-cp", classPath.toString(),
-          "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialectStr
-              + "Dialect", folder.getCanonicalPath(), locale);
+          "org.beangle.data.jpa.hibernate.tool.HbmLint", folder.getCanonicalPath());
       getLog().debug(pb.command().toString());
       pb.redirectErrorStream(true);
       Process pro = pb.start();
@@ -82,11 +66,5 @@ public class DdlMojo extends AbstractMojo {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  private String getDialect() {
-    String d = System.getProperty("beangle.dialect");
-    if (d != null && d.length() > 0) return d;
-    else return dialect;
   }
 }

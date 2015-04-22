@@ -1,4 +1,4 @@
-package org.beangle.maven.hibernate;
+package org.beangle.maven.patch;
 
 import java.io.File;
 import java.io.FileOutputStream;
