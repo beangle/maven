@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.beangle.maven</groupId>
+    <artifactId>beangle-maven-parent</artifactId>
+    <version>0.1.6-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.beangle.maven</groupId>
+  <artifactId>beangle-maven-launcher</artifactId>
+  <packaging>jar</packaging>
+  <name>Beangle Maven Launcher</name>
+
+  <properties>
+    <bundle.symbolicName>org.beangle.maven.launcher</bundle.symbolicName>
+    <bundle.namespace>org.beangle.maven.launcher</bundle.namespace>
+  </properties>
+
+  <description>
+    Beangle Maven Jar Launcher
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+</project>
