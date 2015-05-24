@@ -64,7 +64,7 @@ public class ArtifactDownloader {
     }
   }
 
-  public void download(Artifact[] artifacts) throws Exception {
+  public void download(Artifact[] artifacts) {
     if (artifacts.length <= 0) return;
     for (final Artifact artifact : artifacts) {
       executor.execute(new Runnable() {
@@ -83,10 +83,10 @@ public class ArtifactDownloader {
       });
     }
 
-    Thread.sleep(500);
+    sleep(500);
     int i = 0;
     while (!statuses.isEmpty()) {
-      Thread.sleep(500);
+      sleep(500);
       char[] splash = new char[] { '\\', '|', '/', '-' };
       print(multiple("\b", 100));
       StringBuilder sb = new StringBuilder();
@@ -108,6 +108,15 @@ public class ArtifactDownloader {
       sb.append(msg);
     }
     return sb.toString();
+  }
+
+  private void sleep(int millsecond) {
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
   private static void print(String msg) {
