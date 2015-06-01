@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.hibernate;
+package org.beangle.maven.plugin.hibernate;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,4 +1,4 @@
-package org.beangle.maven.patch;
+package org.beangle.maven.plugin.patch;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

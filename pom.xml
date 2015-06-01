@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle</groupId>
     <artifactId>beangle-java</artifactId>
-    <version>22.1</version>
+    <version>22.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -14,6 +14,9 @@
 
   <properties>
     <mvnVersion>3.1.1</mvnVersion>
+    <beangle.commons.version>4.2.5</beangle.commons.version>
+    <beangle.data.version>4.2.2</beangle.data.version>
+    <hibernateVersion>4.3.1.Final</hibernateVersion>
   </properties>
 
   <description>

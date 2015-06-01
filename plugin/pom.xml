@@ -12,10 +12,8 @@
   <name>Beangle Maven Plugin</name>
 
   <properties>
-    <mvnVersion>3.1.1</mvnVersion>
-    <beangle.commons.version>4.2.4</beangle.commons.version>
-    <beangle.data.version>4.2.2-SNAPSHOT</beangle.data.version>
-    <hibernateVersion>4.3.1.Final</hibernateVersion>
+    <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
+    <bundle.namespace>org.beangle.maven.launcher</bundle.namespace>
   </properties>
 
   <description>
@@ -23,6 +21,7 @@
   </description>
 
   <dependencies>
+    <!--
     <dependency>
       <groupId>org.beangle.commons</groupId>
       <artifactId>beangle-commons-core</artifactId>
@@ -42,7 +41,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernateVersion}</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>

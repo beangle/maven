@@ -1,4 +1,4 @@
-package org.beangle.maven.patch;
+package org.beangle.maven.plugin.patch;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +21,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.settings.Settings;
-import org.beangle.maven.hibernate.Hibernates;
-import org.beangle.maven.util.Projects;
+import org.beangle.maven.plugin.hibernate.Hibernates;
+import org.beangle.maven.plugin.util.Projects;
 
 @Mojo(name = "patch-hibernate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class PatchMojo extends AbstractMojo {

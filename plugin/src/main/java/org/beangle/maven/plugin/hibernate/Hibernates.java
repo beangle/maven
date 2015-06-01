@@ -1,4 +1,4 @@
-package org.beangle.maven.hibernate;
+package org.beangle.maven.plugin.hibernate;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.project.MavenProject;
-import org.beangle.maven.util.Projects;
+import org.beangle.maven.plugin.util.Projects;
 
 public class Hibernates {
 
@@ -16,9 +16,9 @@ public class Hibernates {
   public static final String HibernateVersion = "4.3.1.Final";
   static {
     add("org.scala", "scala-library", "2.11.6");
-    add("org.beangle.commons", "beangle-commons-core", "4.2.4");
-    add("org.beangle.data", "beangle-data-model", "4.2.2-SNAPSHOT");
-    add("org.beangle.data", "beangle-data-jpa", "4.2.2-SNAPSHOT");
+    add("org.beangle.commons", "beangle-commons-core", "4.2.5");
+    add("org.beangle.data", "beangle-data-model", "4.2.2");
+    add("org.beangle.data", "beangle-data-jpa", "4.2.2");
 
     add("org.hibernate", "hibernate-core", HibernateVersion);
     add("org.jboss.logging", "jboss-logging", "3.1.3.GA");
