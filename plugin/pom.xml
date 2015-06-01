@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.1.6-SNAPSHOT</version>
+    <version>0.1.6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -13,7 +13,7 @@
 
   <properties>
     <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
-    <bundle.namespace>org.beangle.maven.launcher</bundle.namespace>
+    <bundle.namespace>org.beangle.maven.plugin</bundle.namespace>
   </properties>
 
   <description>
@@ -21,27 +21,6 @@
   </description>
 
   <dependencies>
-    <!--
-    <dependency>
-      <groupId>org.beangle.commons</groupId>
-      <artifactId>beangle-commons-core</artifactId>
-      <version>${beangle.commons.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.data</groupId>
-      <artifactId>beangle-data-model</artifactId>
-      <version>${beangle.data.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.data</groupId>
-      <artifactId>beangle-data-jpa</artifactId>
-      <version>${beangle.data.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>${hibernateVersion}</version>
-    </dependency>-->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
