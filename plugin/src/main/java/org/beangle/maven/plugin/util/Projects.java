@@ -16,21 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.container;
+package org.beangle.maven.plugin.util;
 
-public class Dependency {
+import org.apache.maven.artifact.Artifact;
 
-  String groupId;
+public class Projects {
 
-  String artifactId;
-
-  public boolean matches(Dependency other) {
-    return ((groupId.equals("*") || groupId.equals(other.groupId)) && (artifactId.equals("*") || artifactId
-        .equals(other.artifactId)));
-  }
-
-  public Dependency(String groupId, String artifactId) {
-    this.groupId = groupId;
-    this.artifactId = artifactId;
+  public static String getPath(Artifact artifact, String localRepository) {
+    StringBuilder path = new StringBuilder();
+    path.append(localRepository).append("/").append(artifact.getGroupId().replaceAll("\\.", "/")).append("/")
+        .append(artifact.getArtifactId()).append("/").append(artifact.getVersion()).append("/")
+        .append(artifact.getArtifactId()).append("-").append(artifact.getVersion()).append(".jar");
+    return path.toString();
   }
 }

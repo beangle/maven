@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.hibernate;
+package org.beangle.maven.plugin.hibernate;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name = "gen-hibernate-cfg", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "hbm2cfg", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class CfgMojo extends AbstractMojo {
   @Component
   private MavenProject project;
@@ -55,6 +54,11 @@ public class CfgMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    if (project.getPackaging().equals("pom")) {
+      getLog().info(
+          "Hibernate config generation supports jar/war projects,Skip pom projects.");
+      return;
+    }
     if (null == dir) {
       dir = project.getBuild().getOutputDirectory() + "/META-INF";
       boolean cfgResourceExists = false;
@@ -107,6 +111,7 @@ public class CfgMojo extends AbstractMojo {
 
   private void searchHbm(String folder, List<String> results) throws IOException {
     File parent = new File(folder);
+    if (!parent.exists()) return;
     for (String name : parent.list()) {
       File child = new File(folder + File.separatorChar + name);
       if (child.isFile() && child.exists() && name.endsWith("hbm.xml")) {
@@ -122,6 +127,7 @@ public class CfgMojo extends AbstractMojo {
   /**
    * Determine file is symbolic link or not.
    * FIXME Using Files.isSymbolicLink(file.getPath) when using JDK 1.7
+   * 
    * @param file
    * @return
    * @throws IOException

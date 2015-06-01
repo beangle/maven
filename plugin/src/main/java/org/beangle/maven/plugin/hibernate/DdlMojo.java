@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.hibernate;
+package org.beangle.maven.plugin.hibernate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,14 +32,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
-import org.beangle.maven.util.Projects;
 
 /**
  * Generate Hibernate ddl
  * 
  * @author chii
  */
-@Mojo(name = "gen-ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "hbm2ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DdlMojo extends AbstractMojo {
 
   @Component
@@ -56,8 +55,12 @@ public class DdlMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    if (project.getPackaging().equals("pom")) {
+      getLog().info("Ddl generation supports jar/war projects,Skip pom projects.");
+      return;
+    }
     String dialectStr = getDialect();
-    String classPath = Projects.classpath(project, settings.getLocalRepository());
+    String classPath = Hibernates.classpath(project, settings.getLocalRepository());
     File folder = new File(project.getBuild().getOutputDirectory() + "/../generated-resources/ddl/"
         + dialectStr.toLowerCase() + "/");
     folder.mkdirs();

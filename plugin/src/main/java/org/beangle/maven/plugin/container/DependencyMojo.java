@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.container;
+package org.beangle.maven.plugin.container;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -58,7 +58,7 @@ public class DependencyMojo extends AbstractMojo {
       getLog().info("Container Dependency Generation supports only war project!");
       return;
     }
-    String folder = project.getBuild().getOutputDirectory() + "/META-INF";
+    String folder = project.getBuild().getOutputDirectory() + "/META-INF/beangle";
     new File(folder).mkdirs();
     File file = new File(folder + "/" + fileName);
     file.delete();
