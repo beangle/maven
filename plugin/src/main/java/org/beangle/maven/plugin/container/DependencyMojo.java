@@ -88,7 +88,7 @@ public class DependencyMojo extends AbstractMojo {
             }
           }
 
-          if (groupId.startsWith("org.scala-lang") || groupId.startsWith("javax.servlet")) included = false;
+          if (groupId.startsWith("javax.servlet")) included = false;
 
           if (included) {
             for (Dependency d : excludes) {
