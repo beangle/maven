@@ -1,18 +1,22 @@
 package org.beangle.maven.launcher;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.beangle.maven.launcher.downloader.Downloader;
+import org.beangle.maven.launcher.downloader.RangeDownloader;
+
 /**
+ * ArtifactDownloader
+ * <p>
+ * Support Features
+ * <li>Display download processes
+ * <li>Multiple thread downloading
+ * <li>Detect resource status before downloading
+ * 
  * @author chaostone
  */
 public class ArtifactDownloader {
@@ -20,7 +24,7 @@ public class ArtifactDownloader {
   private final RemoteRepository remote;
   private final LocalRepository local;
 
-  private Map<String, DownloadStatus> statuses = new ConcurrentHashMap<String, DownloadStatus>();
+  private Map<String, Downloader> statuses = new ConcurrentHashMap<String, Downloader>();
 
   private ExecutorService executor;
 
@@ -31,68 +35,40 @@ public class ArtifactDownloader {
     this.executor = Executors.newFixedThreadPool(5);
   }
 
-  void dowload(String url, String location) throws IOException {
-    DownloadStatus status = statuses.get(url);
-    if (new File(location).exists()) { return; }
-
-    System.out.println("download:" + url);
-    InputStream input = null;
-    OutputStream output = null;
-    try {
-      File file = new File(location + ".part");
-      file.delete();
-      file.getParentFile().mkdirs();
-
-      byte[] buffer = new byte[1024 * 4];
-      URL resourceURL = new URL(url);
-
-      URLConnection conn = resourceURL.openConnection();
-      status.total = conn.getContentLength();
-      input = resourceURL.openConnection().getInputStream();
-      output = new FileOutputStream(file);
-
-      int n = input.read(buffer);
-      while (-1 != n) {
-        output.write(buffer, 0, n);
-        status.count += n;
-        n = input.read(buffer);
-      }
-      file.renameTo(new File(location));
-    } finally {
-      if (input != null) input.close();
-      if (output != null) output.close();
-    }
-  }
-
-  public void download(Artifact[] artifacts) {
+  public void download(final Artifact[] artifacts) {
     if (artifacts.length <= 0) return;
+    int idx = 1;
     for (final Artifact artifact : artifacts) {
+      final int id = idx;
       executor.execute(new Runnable() {
         public void run() {
-          String url = remote.url(artifact);
-          DownloadStatus status = new DownloadStatus(0);
-          statuses.put(url, status);
+          Downloader downloader = new RangeDownloader(id + "/" + artifacts.length, remote.url(artifact),
+              local.path(artifact));
+          statuses.put(downloader.getUrl(), downloader);
           try {
-            dowload(url, local.path(artifact));
+            downloader.start();
           } catch (IOException e) {
             e.printStackTrace();
           } finally {
-            statuses.remove(url);
+            statuses.remove(downloader.getUrl());
           }
         }
       });
+      idx += 1;
     }
 
     sleep(500);
     int i = 0;
-    while (!statuses.isEmpty()) {
+    while (!statuses.isEmpty() && !executor.isTerminated()) {
       sleep(500);
       char[] splash = new char[] { '\\', '|', '/', '-' };
-      print(multiple("\b", 100));
+      // print(multiple("\b", 100));
+      print("\r");
       StringBuilder sb = new StringBuilder();
       sb.append(splash[i % 4]).append("  ");
-      for (Map.Entry<String, DownloadStatus> thread : statuses.entrySet()) {
-        sb.append((thread.getValue().count / 1024 + "KB/" + (thread.getValue().total / 1024) + "KB    "));
+      for (Map.Entry<String, Downloader> thread : statuses.entrySet()) {
+        Downloader downloader = thread.getValue();
+        sb.append((downloader.getDownloaded() / 1024 + "KB/" + (downloader.getContentLength() / 1024) + "KB    "));
       }
       sb.append((multiple(" ", (100 - sb.length()))));
       i += 1;
@@ -122,15 +98,4 @@ public class ArtifactDownloader {
   private static void print(String msg) {
     System.out.print(msg);
   }
-}
-
-class DownloadStatus {
-  public int total;
-  public int count;
-
-  public DownloadStatus(int total) {
-    super();
-    this.total = total;
-  }
-
 }
