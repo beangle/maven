@@ -65,6 +65,7 @@ public class DdlMojo extends AbstractMojo {
         + dialectStr.toLowerCase() + "/");
     folder.mkdirs();
     try {
+      getLog().info("Using classpath:" + classPath.toString());
       getLog().info("Hibernate DDl generating in " + folder.getCanonicalPath());
       ProcessBuilder pb = new ProcessBuilder("java", "-cp", classPath.toString(),
           "org.beangle.data.jpa.hibernate.tool.DdlGenerator", "org.hibernate.dialect." + dialectStr
