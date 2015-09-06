@@ -16,9 +16,9 @@ public class Hibernates {
   public static final String HibernateVersion = "4.3.1.Final";
   static {
     add("org.scala", "scala-library", "2.11.6");
-    add("org.beangle.commons", "beangle-commons-core", "4.2.6");
-    add("org.beangle.data", "beangle-data-model_2.11", "4.2.3.RC1");
-    add("org.beangle.data", "beangle-data-jpa_2.11", "4.2.3.RC1");
+    add("org.beangle.commons", "beangle-commons-core", "4.3.0");
+    add("org.beangle.data", "beangle-data-model_2.11", "4.2.3");
+    add("org.beangle.data", "beangle-data-jpa_2.11", "4.2.3");
 
     add("org.hibernate", "hibernate-core", HibernateVersion);
     add("org.jboss.logging", "jboss-logging", "3.1.3.GA");

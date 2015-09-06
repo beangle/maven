@@ -14,9 +14,6 @@
 
   <properties>
     <mvnVersion>3.1.1</mvnVersion>
-    <beangle.commons.version>4.2.5</beangle.commons.version>
-    <beangle.data.version>4.2.2</beangle.data.version>
-    <hibernateVersion>4.3.1.Final</hibernateVersion>
   </properties>
 
   <description>
