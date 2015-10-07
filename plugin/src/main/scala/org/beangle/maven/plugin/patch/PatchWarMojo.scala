@@ -24,13 +24,13 @@ class PatchWarMojo extends AbstractMojo {
       getLog.info("Hibernate war patching supports war project.Skip jar/pom projects.")
       return
     }
-    var findBeangleJpa = false
+    var findBeangleHibernate = false
     var findHibernate = false
     for (artifact <- project.getArtifacts) {
-      if (artifact.getArtifactId == "beangle-data-jpa") findBeangleJpa = true
+      if (artifact.getArtifactId.startsWith("beangle-data-hibernate")) findBeangleHibernate = true
       if (artifact.getArtifactId == "hibernate-core") findHibernate = true
     }
-    if (!(findHibernate && findBeangleJpa)) return
+    if (!(findHibernate && findBeangleHibernate)) return
     try {
       for (patch <- Patches.files) {
         val target = project.getBuild.getOutputDirectory + patch
