@@ -17,11 +17,11 @@ object Hibernates {
 
   add("org.scala", "scala-library", "2.11.6")
 
-  add("org.beangle.commons", "beangle-commons-core", "4.3.0")
+  add("org.beangle.commons", "beangle-commons-core", "4.4.2")
 
-  add("org.beangle.data", "beangle-data-model_2.11", "4.2.3")
+  add("org.beangle.data", "beangle-data-model_2.11", "4.3.0")
 
-  add("org.beangle.data", "beangle-data-jpa_2.11", "4.2.3")
+  add("org.beangle.data", "beangle-data-hibernate_2.11", "4.3.0")
 
   add("org.hibernate", "hibernate-core", HibernateVersion)
 

@@ -39,7 +39,7 @@ class DdlMojo extends AbstractMojo {
     try {
       getLog.info("Using classpath:" + classPath.toString)
       getLog.info("Hibernate DDl generating in " + folder.getCanonicalPath)
-      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.jpa.hibernate.tool.DdlGenerator",
+      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.hibernate.tool.DdlGenerator",
         "org.hibernate.dialect." + dialectStr + "Dialect", folder.getCanonicalPath, locale)
       getLog.debug(pb.command().toString)
       pb.redirectErrorStream(true)

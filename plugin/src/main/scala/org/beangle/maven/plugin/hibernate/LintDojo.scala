@@ -26,7 +26,7 @@ class LintDojo extends AbstractMojo {
     val classPath = Hibernates.classpath(project, settings.getLocalRepository)
     try {
       getLog.info("Hibernate Hbm lint result in " + folder.getCanonicalPath)
-      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.jpa.hibernate.tool.HbmLint",
+      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.hibernate.tool.HbmLint",
         folder.getCanonicalPath)
       getLog.debug(pb.command().toString)
       pb.redirectErrorStream(true)
