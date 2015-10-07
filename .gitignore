@@ -1,5 +1,5 @@
-# Typically *NIX text editors, by default, append '~' to files on saving to make backups
 *~
+.*
 
 # Build output directies
 target
@@ -9,10 +9,23 @@ target
 .project
 .settings
 .metadata
-.tomcatplugin
-test-output
-RemoteSystemsTempFiles
-Servers
-work
-.#webclasspath
+
+*.class
+*.log
+
+#idea
 *.iml
+*.ipr
+*.iws
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+test-output

@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.beangle</groupId>
-    <artifactId>beangle-java</artifactId>
+    <artifactId>beangle-scala</artifactId>
     <version>22.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -10,10 +10,13 @@
   <artifactId>beangle-maven-parent</artifactId>
   <packaging>pom</packaging>
   <name>Beangle Maven Toolkit</name>
-  <version>0.1.7</version>
+  <version>0.2.0</version>
 
   <properties>
     <mvnVersion>3.1.1</mvnVersion>
+    <beangle.commons.version>4.4.2</beangle.commons.version>
+    <beangle.mvc.version>0.3.1</beangle.mvc.version>
+    <beangle.cdi.version>0.0.1</beangle.cdi.version>
   </properties>
 
   <description>
@@ -22,6 +25,15 @@
 
   <modules>
     <module>plugin</module>
-    <module>launcher</module>
+    <module>artifact</module>
+    <module>repository</module>
   </modules>
+
+    <dependencies>
+      <dependency>
+        <groupId>org.beangle.commons</groupId>
+        <artifactId>beangle-commons-core_2.11</artifactId>
+        <version>${beangle.commons.version}</version>
+      </dependency>
+    </dependencies>
 </project>
