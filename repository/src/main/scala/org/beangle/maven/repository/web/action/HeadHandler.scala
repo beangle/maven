@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 /**
  * @author chaostone
  */
-class Maven2Handler extends ActionSupport with Handler {
+class HeadHandler extends ActionSupport with Handler {
 
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val path = Params.get("path").get
@@ -27,17 +27,12 @@ class Maven2Handler extends ActionSupport with Handler {
     var remotePath = "http://central.maven.org/maven2/" + filePath
     val file = new File(localPath)
     if (file.exists()) {
-      val is = new FileInputStream(file)
-      IOs.copy(is, response.getOutputStream)
-      //FIXME rebase on beangle 4.4.1
-      is.close()
+      response.addHeader("FileSize", String.valueOf(file.length))
     } else {
       val downloader = new RangeDownloader("download", remotePath, localPath)
       downloader.start()
       if (file.exists()) {
-        val is = new FileInputStream(file)
-        IOs.copy(is, response.getOutputStream)
-        is.close()
+        response.addHeader("FileSize", String.valueOf(file.length))
       } else {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND)
       }
