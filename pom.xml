@@ -15,7 +15,7 @@
   <properties>
     <mvnVersion>3.1.1</mvnVersion>
     <beangle.commons.version>4.4.2</beangle.commons.version>
-    <beangle.mvc.version>0.3.1</beangle.mvc.version>
+    <beangle.mvc.version>0.3.2</beangle.mvc.version>
     <beangle.cdi.version>0.0.1</beangle.cdi.version>
   </properties>
 
@@ -26,7 +26,7 @@
   <modules>
     <module>plugin</module>
     <module>artifact</module>
-    <module>repository</module>
+    <module>mirror</module>
   </modules>
 
     <dependencies>

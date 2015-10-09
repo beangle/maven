@@ -1,3 +1,21 @@
+/*
+ * Beangle, Agile Development Scaffold and Toolkit
+ *
+ * Copyright (c) 2005-2015, Beangle Software.
+ *
+ * Beangle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Beangle is distributed in the hope that it will be useful.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.beangle.maven.plugin.hibernate
 
 import java.io.File
@@ -21,17 +39,18 @@ import org.apache.maven.plugins.annotations.ResolutionScope
 import org.apache.maven.project.MavenProject
 import scala.collection.JavaConversions._
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.io.IOs
 
 @Mojo(name = "hbm2cfg", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class CfgMojo extends AbstractMojo {
 
-  @Component
+  @Parameter(property = "project", defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _
-
-  private val fileName = "hibernate.cfg.xml"
 
   @Parameter(property = "dir")
   private var dir: String = _
+
+  private val fileName = "hibernate.cfg.xml"
 
   override def execute() {
     if (project.getPackaging == "pom") {
@@ -40,7 +59,18 @@ class CfgMojo extends AbstractMojo {
     }
     if (null == dir) {
       dir = project.getBuild.getOutputDirectory + "/META-INF"
-      val cfgResourceExists = project.getBuild.getResources.exists(r => new File(r.getDirectory + "/META-INF/" + fileName).exists())
+
+      var cfgResourceExists = false
+      val resources = project.getBuild.getResources
+      var i = 0
+      while (i < resources.length) {
+        val r = resources(i)
+        if (new File(r.getDirectory + "/META-INF/" + fileName).exists) {
+          cfgResourceExists = true
+          i = resources.length
+        }
+        i += 1
+      }
       if (cfgResourceExists) {
         getLog.info("Hibernate.cfg.xml exists,so generation will use generated-resources.")
         dir = project.getBuild.getOutputDirectory + "/../generated-resources"
@@ -55,11 +85,13 @@ class CfgMojo extends AbstractMojo {
       folder.mkdirs()
       val cfg = new File(folder.getCanonicalPath + File.separator + fileName)
       cfg.createNewFile()
-      val template = read(this.getClass.getResource("/hibernate.cfg.xml.ftl"))
+      val template = IOs.readString(this.getClass.getResourceAsStream("/hibernate.cfg.xml.ftl"))
       val mappings = new StringBuilder(100 * hbms.size)
       hbms.sorted
       var last: String = null
-      hbms foreach { hbmfile =>
+      val iter = hbms.iterator
+      while (iter.hasNext) {
+        val hbmfile = iter.next
         val relative = hbmfile.substring(project.getBuild.getOutputDirectory.length + 1)
         relative.replace('\\', '/')
         if (null != last &&
@@ -80,13 +112,17 @@ class CfgMojo extends AbstractMojo {
   private def searchHbm(folder: String, results: Iterable[String]) {
     val parent = new File(folder)
     if (!parent.exists()) return
-    for (name <- parent.list()) {
+    val files = parent.list
+    var i = 0
+    while (i < files.length) {
+      val name = files(i)
       val child = new File(folder + File.separatorChar + name)
       if (child.isFile && child.exists() && name.endsWith("hbm.xml")) {
         results.add(folder + File.separatorChar + name)
       } else {
         if (child.isDirectory && !isSymbolicLink(child)) searchHbm(child.getCanonicalPath, results)
       }
+      i += 1
     }
   }
 
@@ -95,29 +131,9 @@ class CfgMojo extends AbstractMojo {
     if (file.getParent == null) {
       canon = file
     } else {
-      val canonDir = file.getParentFile.getCanonicalFile
-      canon = new File(canonDir, file.getName)
+      canon = new File(file.getParentFile.getCanonicalFile, file.getName)
     }
     canon.getCanonicalFile != canon.getAbsoluteFile
   }
 
-  private def read(url: URL): String = {
-    val sw = new StringWriter(16)
-    val is = url.openStream()
-    copy(new InputStreamReader(is), sw)
-    is.close()
-    sw.toString
-  }
-
-  private def copy(input: Reader, output: Writer): Int = {
-    val buffer = Array.ofDim[Char](1024)
-    var count = 0
-    var n = input.read(buffer)
-    while (-1 != n) {
-      output.write(buffer, 0, n)
-      count += n
-      n = input.read(buffer)
-    }
-    count
-  }
 }

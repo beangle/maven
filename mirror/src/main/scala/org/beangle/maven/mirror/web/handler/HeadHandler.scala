@@ -16,7 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.mirror.web.handler
 
-case class Artifact(val groupId: String, val artifactId: String, val version: String)
-   
+import org.beangle.commons.lang.annotation.spi
+import org.beangle.maven.mirror.service.Mirror
+import org.beangle.webmvc.api.action.ActionSupport
+import org.beangle.webmvc.execution.Handler
+
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.HttpServletResponse.{ SC_NOT_FOUND, SC_OK }
+/**
+ * @author chaostone
+ */
+class HeadHandler extends Handler {
+
+  def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
+    val filePath = PathHelper.getFilePath(request)
+    response.setStatus(if (Mirror.exists(filePath)) SC_OK else SC_NOT_FOUND)
+  }
+
+}
