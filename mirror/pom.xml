@@ -3,21 +3,21 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
-  <artifactId>beangle-maven-repository_2.11</artifactId>
+  <artifactId>beangle-maven-mirror_2.11</artifactId>
   <packaging>war</packaging>
-  <name>Beangle Maven Repository</name>
+  <name>Beangle Maven Repository Mirror</name>
 
   <properties>
-    <bundle.symbolicName>org.beangle.maven.repository</bundle.symbolicName>
-    <bundle.namespace>org.beangle.maven.repository</bundle.namespace>
+    <bundle.symbolicName>org.beangle.maven.mirror</bundle.symbolicName>
+    <bundle.namespace>org.beangle.maven.mirror</bundle.namespace>
   </properties>
 
   <description>
-    Beangle Maven Jar Repository
+    Beangle Maven Jar Repository Mirror
   </description>
 
   <dependencies>
@@ -57,7 +57,7 @@
       <plugin>
         <groupId>org.beangle.maven</groupId>
         <artifactId>beangle-maven-plugin</artifactId>
-        <version>0.1.7</version>
+        <version>0.2.1</version>
         <configuration>
           <dependencyIncludes>*:*</dependencyIncludes>
         </configuration>

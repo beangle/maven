@@ -1,3 +1,21 @@
+/*
+ * Beangle, Agile Development Scaffold and Toolkit
+ *
+ * Copyright (c) 2005-2015, Beangle Software.
+ *
+ * Beangle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Beangle is distributed in the hope that it will be useful.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.beangle.maven.plugin.hibernate
 
 import java.io.{ BufferedReader, File, InputStreamReader }
@@ -13,10 +31,10 @@ import org.apache.maven.settings.Settings
 @Mojo(name = "hbm2ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DdlMojo extends AbstractMojo {
 
-  @Component
+  @Parameter(defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _
 
-  @Component
+  @Parameter(defaultValue = "${settings}", readonly = true)
   private var settings: Settings = _
 
   @Parameter(property = "dialect", defaultValue = "PostgreSQL9")
@@ -33,8 +51,7 @@ class DdlMojo extends AbstractMojo {
     val dialectStr = dialect
     val classPath = Hibernates.classpath(project, settings.getLocalRepository)
     val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" +
-      dialectStr.toLowerCase() +
-      "/")
+      dialectStr.toLowerCase() + "/")
     folder.mkdirs()
     try {
       getLog.info("Using classpath:" + classPath.toString)
@@ -57,8 +74,4 @@ class DdlMojo extends AbstractMojo {
     }
   }
 
-  //  private def getDialect(): String = {
-  //    val d = System.getProperty("beangle.dialect")
-  //    if (d != null && d.length > 0) d else dialect
-  //  }
 }

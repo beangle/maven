@@ -16,7 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.mirror.web
 
-case class Artifact(val groupId: String, val artifactId: String, val version: String)
-   
+import org.beangle.commons.inject.bind.AbstractBindModule
+
+/**
+ * @author chaostone
+ */
+object DefaultModule extends AbstractBindModule {
+
+  protected override def binding(): Unit = {
+    bind(classOf[RouteConfig])
+  }
+}

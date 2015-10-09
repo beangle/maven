@@ -16,7 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.mirror.web
 
-case class Artifact(val groupId: String, val artifactId: String, val version: String)
-   
+import org.beangle.webmvc.dispatch.{ Route, RouteProvider }
+import org.beangle.commons.http.HttpMethods._
+import org.beangle.maven.mirror.web.handler.GetHandler
+import org.beangle.maven.mirror.web.handler.HeadHandler
+
+/**
+ * @author chaostone
+ */
+class RouteConfig extends RouteProvider {
+
+  def routes: Iterable[Route] = {
+    List(new Route(GET, "/{path*}", new GetHandler),
+      new Route(HEAD, "/{path*}", new HeadHandler))
+  }
+}

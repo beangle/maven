@@ -16,7 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.mirror.web.handler
 
-case class Artifact(val groupId: String, val artifactId: String, val version: String)
-   
+import org.beangle.commons.lang.Strings
+import org.beangle.webmvc.api.context.Params
+
+import javax.servlet.http.HttpServletRequest
+
+/**
+ * @author chaostone
+ */
+object PathHelper {
+  def getFilePath(request: HttpServletRequest): String = {
+    val path = Params.get("path").get
+    val url = request.getRequestURI
+    if (url.contains(".")) path + ("." + Strings.substringAfterLast(url, ".")) else path
+  }
+}

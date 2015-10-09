@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -36,6 +36,19 @@
       <artifactId>maven-core</artifactId>
       <version>${mvnVersion}</version>
     </dependency>
+    <!--change scala scope to compile for maven classloader-->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-reflect</artifactId>
+      <version>${scala.version}</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
@@ -49,7 +62,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
