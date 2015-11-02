@@ -33,7 +33,7 @@ class ArtifactDownloaderTest extends FunSpec with Matchers {
   describe("artifact downloader") {
     it("can download such jars") {
       val artifacts = Collections.newBuffer[Artifact]
-      artifacts += Artifact("antlr", "antlr", "2.7.7")
+//      artifacts += Artifact("antlr", "antlr", "2.7.7")
 //      artifacts += Artifact("aopalliance", "aopalliance", "1.0")
 //      artifacts += Artifact("asm", "asm-commons", "3.3")
 //      artifacts += Artifact("asm", "asm-tree", "3.3")
@@ -125,7 +125,7 @@ class ArtifactDownloaderTest extends FunSpec with Matchers {
 //      artifacts += Artifact("oro", "oro", "2.0.8")
 //      artifacts += Artifact("stax", "stax-api", "1.0.1")
 //      artifacts += Artifact("xml-apis", "xml-apis", "1.4.01")
-      downloader.download(artifacts)
+//      downloader.download(artifacts)
     }
   }
 }
