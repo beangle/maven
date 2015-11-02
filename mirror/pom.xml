@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -57,7 +57,7 @@
       <plugin>
         <groupId>org.beangle.maven</groupId>
         <artifactId>beangle-maven-plugin</artifactId>
-        <version>0.2.2</version>
+        <version>0.2.3-SNAPSHOT</version>
         <configuration>
           <dependencyIncludes>*:*</dependencyIncludes>
         </configuration>
