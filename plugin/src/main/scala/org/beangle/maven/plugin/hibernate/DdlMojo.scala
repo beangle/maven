@@ -26,7 +26,7 @@ import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
 
 /**
- *
+ * Generate ddl from hibernate mappings
  */
 @Mojo(name = "hbm2ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DdlMojo extends AbstractMojo {
@@ -50,11 +50,10 @@ class DdlMojo extends AbstractMojo {
     }
     val dialectStr = dialect
     val classPath = Hibernates.classpath(project, settings.getLocalRepository)
-    val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" +
-      dialectStr.toLowerCase() + "/")
+    val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()
     try {
-      getLog.info("Using classpath:" + classPath.toString)
+      getLog.debug("Using classpath:" + classPath.toString)
       getLog.info("Hibernate DDl generating in " + folder.getCanonicalPath)
       val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.hibernate.tool.DdlGenerator",
         "org.hibernate.dialect." + dialectStr + "Dialect", folder.getCanonicalPath, locale)

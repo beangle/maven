@@ -32,7 +32,7 @@ class Initializer extends org.beangle.commons.web.init.Initializer {
     sc.setInitParameter("childContextConfigLocation", "WebApplicationContext:Action@classpath:spring-web-context.xml")
 
     addListener(new ContextListener)
-    val action = sc.addFilter("Action", new Dispatcher)
-    action.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*")
+    val action = sc.addServlet("Action", new Dispatcher)
+    action.addMapping("/*")
   }
 }
