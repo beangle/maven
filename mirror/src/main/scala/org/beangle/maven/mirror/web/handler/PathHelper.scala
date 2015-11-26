@@ -28,7 +28,6 @@ import org.beangle.commons.web.util.RequestUtils
  */
 object PathHelper {
   def getFilePath(request: HttpServletRequest): String = {
-    val path = RequestUtils.getServletPath(request)
-    if (path.charAt(0) == '/') path.substring(1) else path
+    RequestUtils.getServletPath(request)
   }
 }
