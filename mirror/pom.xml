@@ -22,6 +22,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.beangle.commons</groupId>
+      <artifactId>beangle-commons-web_2.11</artifactId>
+      <version>${beangle.commons.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.beangle.maven</groupId>
       <artifactId>beangle-maven-artifact_2.11</artifactId>
       <version>${project.version}</version>

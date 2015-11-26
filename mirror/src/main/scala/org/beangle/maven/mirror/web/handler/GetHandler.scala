@@ -19,22 +19,25 @@
 package org.beangle.maven.mirror.web.handler
 
 import java.io.FileInputStream
-
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.annotation.spi
 import org.beangle.maven.mirror.service.Mirror
 import org.beangle.webmvc.execution.Handler
-
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import java.io.IOException
+import org.beangle.commons.lang.Strings
+import org.beangle.commons.lang.time.Stopwatch
+import org.beangle.commons.web.io.RangedWagon
 /**
  * @author chaostone
  */
 class GetHandler extends Handler {
-
+  val wagon = new RangedWagon
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val filePath = PathHelper.getFilePath(request)
     if (Mirror.exists(filePath)) {
-      IOs.copy(new FileInputStream(Mirror.get(filePath)), response.getOutputStream)
+      val file = Mirror.get(filePath)
+      wagon.copy(new FileInputStream(file), request, response)
     } else {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND)
     }

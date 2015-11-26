@@ -36,7 +36,9 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
     val conn = resourceURL.openConnection()
     val startAt = System.currentTimeMillis()
     this.status = new Downloader.Status(conn.getContentLengthLong)
-    if (this.status.total > java.lang.Integer.MAX_VALUE) throw new RuntimeException("Too large file.Using DefaultURLDownloader")
+    if (this.status.total <= 0 || this.status.total > java.lang.Integer.MAX_VALUE) {
+      throw new RuntimeException("Cannot download ${url} with size ${this.status.total}")
+    }
     val total = this.status.total.toInt
     val totalbuffer = Array.ofDim[Byte](total)
     var begin = 0

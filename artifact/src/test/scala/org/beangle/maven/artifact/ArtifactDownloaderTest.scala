@@ -18,12 +18,10 @@
  */
 package org.beangle.maven.artifact
 
-import org.junit.runner.RunWith
-import junit.framework.Test
-import org.scalatest.junit.JUnitRunner
 import org.beangle.commons.collection.Collections
-import org.scalatest.Matchers
-import org.scalatest.FunSpec
+import org.junit.runner.RunWith
+import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ArtifactDownloaderTest extends FunSpec with Matchers {

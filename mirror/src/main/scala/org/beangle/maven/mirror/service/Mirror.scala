@@ -32,14 +32,10 @@ object Mirror {
   def exists(filePath: String): Boolean = {
     val localPath = local + filePath
     val localFile = new File(localPath)
-    if (filePath.contains(".")) {
-      if (localFile.exists) true
-      else {
-        new RangeDownloader("download", remote + filePath, localPath).start()
-        localFile.exists
-      }
-    } else {
-      false
+    if (localFile.exists) true
+    else {
+      new RangeDownloader("download", remote + filePath, localPath).start()
+      localFile.exists
     }
   }
 

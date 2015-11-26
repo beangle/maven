@@ -20,16 +20,15 @@ package org.beangle.maven.mirror.web.handler
 
 import org.beangle.commons.lang.Strings
 import org.beangle.webmvc.api.context.Params
-
 import javax.servlet.http.HttpServletRequest
+import org.beangle.commons.web.util.RequestUtils
 
 /**
  * @author chaostone
  */
 object PathHelper {
   def getFilePath(request: HttpServletRequest): String = {
-    val path = Params.get("path").get
-    val url = request.getRequestURI
-    if (url.contains(".")) path + ("." + Strings.substringAfterLast(url, ".")) else path
+    val path = RequestUtils.getServletPath(request)
+    if (path.charAt(0) == '/') path.substring(1) else path
   }
 }
