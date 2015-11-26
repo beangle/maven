@@ -77,10 +77,11 @@ class GetHandler extends Handler {
       if (!item.isHidden && fileName.charAt(0) != '_') {
         if (item.isDirectory) {
           buffer ++= ("<a href=\"" + fileName + "/\">" + s"$fileName/</a>")
+          if (fileName.length < 59) buffer ++= " " * (59 - fileName.length)
         } else {
           writer.write("<a href=\"" + fileName + "\">" + s"$fileName</a>")
+          if (fileName.length < 60) buffer ++= " " * (60 - fileName.length)
         }
-        if (fileName.length < 60) buffer ++= " " * (60 - fileName.length)
         val lastModified = new java.util.Date(item.lastModified)
         buffer ++= (formater.format(lastModified))
         if (item.isDirectory) {
