@@ -52,7 +52,7 @@ class GetHandler extends Handler {
           val file = Mirror.get(filePath)
           val ext = Strings.substringAfterLast(filePath, ".")
           if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
-          CacheControl.expiresAfter(10, response)
+          if (!filePath.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
           wagon.copy(new FileInputStream(file), request, response)
         }
       } else {
