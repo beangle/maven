@@ -26,8 +26,12 @@ import org.beangle.maven.artifact.downloader.RangeDownloader
  * @author chaostone
  */
 object Mirror {
-  val local = SystemInfo.user.home + "/.m2/repository/"
-  val remote = "http://central.maven.org/maven2/"
+  val local = SystemInfo.user.home + "/.m2/repository"
+  val remote = "http://central.maven.org/maven2"
+
+  def local(filePath: String): File = {
+    new File(local + filePath)
+  }
 
   def exists(filePath: String): Boolean = {
     val localPath = local + filePath
