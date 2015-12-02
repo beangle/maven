@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -21,6 +21,11 @@
   </description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.beangle.commons</groupId>
+      <artifactId>beangle-commons-web_2.11</artifactId>
+      <version>${beangle.commons.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.beangle.maven</groupId>
       <artifactId>beangle-maven-artifact_2.11</artifactId>
@@ -57,7 +62,7 @@
       <plugin>
         <groupId>org.beangle.maven</groupId>
         <artifactId>beangle-maven-plugin</artifactId>
-        <version>0.2.2</version>
+        <version>0.2.3</version>
         <configuration>
           <dependencyIncludes>*:*</dependencyIncludes>
         </configuration>
