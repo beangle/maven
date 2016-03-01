@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
-  <artifactId>beangle-maven-artifact_2.11</artifactId>
+  <artifactId>beangle-maven-artifact_2.12</artifactId>
   <packaging>jar</packaging>
   <name>Beangle Maven Artifact</name>
 

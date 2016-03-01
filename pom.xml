@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle</groupId>
     <artifactId>beangle-scala</artifactId>
-    <version>22.4</version>
+    <version>23.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -14,9 +14,9 @@
 
   <properties>
     <mvnVersion>3.3.3</mvnVersion>
-    <beangle.commons.version>4.4.7</beangle.commons.version>
-    <beangle.cdi.version>0.0.5</beangle.cdi.version>
-    <beangle.mvc.version>0.3.5</beangle.mvc.version>
+    <beangle.commons.version>4.4.8-SNAPSHOT</beangle.commons.version>
+    <beangle.cdi.version>0.0.6-SNAPSHOT</beangle.cdi.version>
+    <beangle.mvc.version>0.3.6-SNAPSHOT</beangle.mvc.version>
   </properties>
 
   <description>
@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>org.beangle.commons</groupId>
-      <artifactId>beangle-commons-core_2.11</artifactId>
+      <artifactId>beangle-commons-core_2.12</artifactId>
       <version>${beangle.commons.version}</version>
     </dependency>
   </dependencies>
