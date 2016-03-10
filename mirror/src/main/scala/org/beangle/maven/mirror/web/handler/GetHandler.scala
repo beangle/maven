@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2015, Beangle Software.
+ * Copyright (c) 2005-2016, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,13 +33,15 @@ import org.beangle.commons.activation.MimeTypeProvider
 import org.beangle.webmvc.api.util.CacheControl
 import java.text.SimpleDateFormat
 import java.util.Arrays
+import org.beangle.commons.web.util.RequestUtils
 /**
  * @author chaostone
  */
 class GetHandler extends Handler {
   val wagon = new RangedWagon
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
-    val filePath = PathHelper.getFilePath(request)
+    val filePath = RequestUtils.getServletPath(request)
+
     if (filePath.endsWith("/")) {
       val localFile = Mirror.local(filePath)
       if (localFile.exists) listDir(filePath, localFile, request, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)

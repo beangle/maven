@@ -62,7 +62,7 @@
       <plugin>
         <groupId>org.beangle.maven</groupId>
         <artifactId>beangle-maven-plugin</artifactId>
-        <version>0.2.4-SNAPSHOT</version>
+        <version>${project.version}</version>
         <configuration>
           <dependencyIncludes>*:*</dependencyIncludes>
         </configuration>
