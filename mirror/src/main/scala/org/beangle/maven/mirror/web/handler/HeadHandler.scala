@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2015, Beangle Software.
+ * Copyright (c) 2005-2016, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,16 +22,16 @@ import org.beangle.commons.lang.annotation.spi
 import org.beangle.maven.mirror.service.Mirror
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.execution.Handler
-
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
 import javax.servlet.http.HttpServletResponse.{ SC_NOT_FOUND, SC_OK }
+import org.beangle.commons.web.util.RequestUtils
 /**
  * @author chaostone
  */
 class HeadHandler extends Handler {
 
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
-    val filePath = PathHelper.getFilePath(request)
+    val filePath = RequestUtils.getServletPath(request)
     response.setStatus(if (Mirror.exists(filePath)) SC_OK else SC_NOT_FOUND)
   }
 

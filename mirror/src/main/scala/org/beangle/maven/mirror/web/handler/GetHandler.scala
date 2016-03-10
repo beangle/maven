@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2015, Beangle Software.
+ * Copyright (c) 2005-2016, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,21 +33,23 @@ import org.beangle.commons.activation.MimeTypeProvider
 import org.beangle.webmvc.api.util.CacheControl
 import java.text.SimpleDateFormat
 import java.util.Arrays
+import org.beangle.commons.web.util.RequestUtils
 /**
  * @author chaostone
  */
 class GetHandler extends Handler {
   val wagon = new RangedWagon
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
-    val filePath = PathHelper.getFilePath(request)
+    val filePath = RequestUtils.getServletPath(request)
+
     if (filePath.endsWith("/")) {
       val localFile = Mirror.local(filePath)
-      if (localFile.exists) listDir(filePath, localFile, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+      if (localFile.exists) listDir(filePath, localFile, request, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)
     } else {
       if (Mirror.exists(filePath)) {
         val localFile = Mirror.local(filePath)
         if (localFile.isDirectory) {
-          listDir(filePath, localFile, response)
+          listDir(filePath, localFile, request, response)
         } else {
           val file = Mirror.get(filePath)
           val ext = Strings.substringAfterLast(filePath, ".")
@@ -61,7 +63,7 @@ class GetHandler extends Handler {
     }
   }
 
-  private def listDir(uri: String, dir: File, response: HttpServletResponse): Unit = {
+  private def listDir(uri: String, dir: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
     response.setCharacterEncoding("utf-8")
     val formater = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     val writer = response.getWriter
@@ -70,16 +72,22 @@ class GetHandler extends Handler {
     if (uri != "/") writer.write("<a href=\"../\">../</a>\n")
     val buffer = new StringBuilder(200)
     val items = dir.list()
+    var prefix = ""
+    if (!uri.endsWith("/")) {
+      prefix = Strings.substringAfterLast(uri, "/")
+      if (prefix.isEmpty()) prefix = request.getContextPath + "/" else prefix += "/"
+    }
     Arrays.sort(items.asInstanceOf[Array[Object]])
     items foreach { fileName =>
+      val href = prefix + fileName
       buffer.clear()
       val item = new File(dir.getAbsolutePath + File.separator + fileName)
       if (!item.isHidden && fileName.charAt(0) != '_') {
         if (item.isDirectory) {
-          buffer ++= ("<a href=\"" + fileName + "/\">" + s"$fileName/</a>")
+          buffer ++= ("<a href=\"" + href + "/\">" + s"$fileName/</a>")
           if (fileName.length < 59) buffer ++= " " * (59 - fileName.length)
         } else {
-          writer.write("<a href=\"" + fileName + "\">" + s"$fileName</a>")
+          writer.write("<a href=\"" + href + "\">" + s"$fileName</a>")
           if (fileName.length < 60) buffer ++= " " * (60 - fileName.length)
         }
         val lastModified = new java.util.Date(item.lastModified)

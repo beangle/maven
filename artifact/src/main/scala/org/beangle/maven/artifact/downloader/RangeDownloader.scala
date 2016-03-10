@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2015, Beangle Software.
+ * Copyright (c) 2005-2016, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -73,8 +73,10 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
       case e: InterruptedException => e.printStackTrace()
     }
     if (status.count.get == status.total) {
-      val output = new FileOutputStream(new File(location))
+      val targetFile = new File(location)
+      val output = new FileOutputStream(targetFile)
       output.write(totalbuffer, 0, total)
+      targetFile.setLastModified(conn.getLastModified)
       IOs.close(output)
     } else {
       throw new RuntimeException("Download error")
