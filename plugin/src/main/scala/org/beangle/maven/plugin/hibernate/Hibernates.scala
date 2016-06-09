@@ -34,17 +34,21 @@ object Hibernates {
 
   val HibernateVersion = "4.3.1.Final"
 
-  add("org.scala", "scala-library", "2.11.6")
+  val CommonsVersion = "4.5.0"
 
-  add("org.beangle.commons", "beangle-commons-core_2.11", "4.4.7")
+  val DataVersion = "4.4.0"
 
-  add("org.beangle.commons", "beangle-commons-i18n_2.11", "4.4.7")
+  add("org.scala", "scala-library", "2.12.0-M4")
 
-  add("org.beangle.commons", "beangle-commons-text_2.11", "4.4.7")
+  add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
 
-  add("org.beangle.data", "beangle-data-model_2.11", "4.3.3")
+  add("org.beangle.commons", "beangle-commons-i18n_2.12", CommonsVersion)
 
-  add("org.beangle.data", "beangle-data-hibernate_2.11", "4.3.3")
+  add("org.beangle.commons", "beangle-commons-text_2.12", CommonsVersion)
+
+  add("org.beangle.data", "beangle-data-model_2.12", DataVersion)
+
+  add("org.beangle.data", "beangle-data-hibernate_2.12", DataVersion)
 
   add("org.hibernate", "hibernate-core", HibernateVersion)
 
