@@ -53,7 +53,7 @@ class DependencyMojo extends AbstractMojo {
       val provideds = new collection.mutable.ArrayBuffer[String]
       val excludes = convert(dependencyExcludes)
       val includes = convert(dependencyIncludes)
-      import scala.collection.JavaConversions._
+      import scala.collection.JavaConverters._
       project.getArtifacts foreach { artifact =>
         val groupId = artifact.getGroupId
         val str = artifact.toString

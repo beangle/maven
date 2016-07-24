@@ -22,7 +22,7 @@ import java.io.IOException
 import java.util.Map
 import java.util.concurrent.{ ConcurrentHashMap, ExecutorService, Executors }
 
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConverters.mapAsScalaMap
 
 import org.beangle.maven.artifact.downloader.{ Downloader, RangeDownloader }
 

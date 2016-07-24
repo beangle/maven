@@ -34,7 +34,7 @@ object Hibernates {
 
   val HibernateVersion = "4.3.1.Final"
 
-  val CommonsVersion = "4.5.0"
+  val CommonsVersion = "4.5.1"
 
   val DataVersion = "4.4.0"
 
