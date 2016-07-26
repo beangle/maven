@@ -22,7 +22,7 @@ import java.io.{ File, FileInputStream, FileOutputStream }
 import java.util.jar.JarFile
 import java.util.zip.{ ZipEntry, ZipInputStream, ZipOutputStream }
 
-import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.JavaConverters.bufferAsJavaList
 
 import org.apache.maven.artifact.DefaultArtifact
 import org.apache.maven.plugin.AbstractMojo
@@ -70,7 +70,7 @@ class PatchMojo extends AbstractMojo {
       val out = new ZipOutputStream(new FileOutputStream(hibernateFile))
       val files = Collections.newBuffer[String]
       files ++= Patches.files
-      files.add(Patches.PatchFlag)
+      files += (Patches.PatchFlag)
       val fileIter = files.iterator
       while (fileIter.hasNext) {
         val patch = fileIter.next()

@@ -25,7 +25,7 @@ import org.apache.maven.artifact.Artifact
 import org.apache.maven.artifact.DefaultArtifact
 import org.apache.maven.project.MavenProject
 import org.beangle.maven.plugin.util.Projects
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters.collectionAsScalaIterable
 import org.beangle.commons.lang.Strings
 
 object Hibernates {
@@ -81,11 +81,11 @@ object Hibernates {
   def classpath(project: MavenProject, localRepository: String): String = {
     val classPath = new StringBuilder(project.getBuild.getOutputDirectory)
     val addon = new HashMap[String, Artifact](dependencies)
-    for (artifact <- project.getArtifacts) {
+    for (artifact <- collectionAsScalaIterable(project.getArtifacts)) {
       addon.remove(artifact.getArtifactId)
       addToClassPath(classPath, localRepository, artifact)
     }
-    for (artifact <- addon.values) {
+    for (artifact <- collectionAsScalaIterable(addon.values)) {
       addToClassPath(classPath, localRepository, artifact)
     }
     val logurl = Hibernates.getClass.getResource("/logback.xml")

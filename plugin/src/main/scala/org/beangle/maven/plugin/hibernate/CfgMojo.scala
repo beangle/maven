@@ -37,7 +37,6 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.plugins.annotations.ResolutionScope
 import org.apache.maven.project.MavenProject
-import scala.collection.JavaConversions._
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.io.IOs
 
@@ -63,11 +62,11 @@ class CfgMojo extends AbstractMojo {
       var cfgResourceExists = false
       val resources = project.getBuild.getResources
       var i = 0
-      while (i < resources.length) {
-        val r = resources(i)
+      while (i < resources.size()) {
+        val r = resources.get(i)
         if (new File(r.getDirectory + "/META-INF/" + fileName).exists) {
           cfgResourceExists = true
-          i = resources.length
+          i = resources.size()
         }
         i += 1
       }
@@ -109,7 +108,7 @@ class CfgMojo extends AbstractMojo {
     }
   }
 
-  private def searchHbm(folder: String, results: Iterable[String]) {
+  private def searchHbm(folder: String, results: collection.mutable.Buffer[String]) {
     val parent = new File(folder)
     if (!parent.exists()) return
     val files = parent.list
@@ -118,7 +117,7 @@ class CfgMojo extends AbstractMojo {
       val name = files(i)
       val child = new File(folder + File.separatorChar + name)
       if (child.isFile && child.exists() && name.endsWith("hbm.xml")) {
-        results.add(folder + File.separatorChar + name)
+        results += (folder + File.separatorChar + name)
       } else {
         if (child.isDirectory && !isSymbolicLink(child)) searchHbm(child.getCanonicalPath, results)
       }
