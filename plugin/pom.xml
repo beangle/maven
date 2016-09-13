@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>

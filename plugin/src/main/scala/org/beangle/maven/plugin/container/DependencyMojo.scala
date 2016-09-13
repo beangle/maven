@@ -24,6 +24,7 @@ import org.apache.maven.artifact.Artifact
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{ Component, Mojo, Parameter, LifecyclePhase, ResolutionScope }
 import org.apache.maven.project.MavenProject
+import scala.collection.JavaConverters
 
 @Mojo(name = "gen-dependency", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DependencyMojo extends AbstractMojo {
@@ -53,8 +54,8 @@ class DependencyMojo extends AbstractMojo {
       val provideds = new collection.mutable.ArrayBuffer[String]
       val excludes = convert(dependencyExcludes)
       val includes = convert(dependencyIncludes)
-      import scala.collection.JavaConversions._
-      project.getArtifacts foreach { artifact =>
+
+      JavaConverters.collectionAsScalaIterable(project.getArtifacts) foreach { artifact =>
         val groupId = artifact.getGroupId
         val str = artifact.toString
         val scope = artifact.getScope

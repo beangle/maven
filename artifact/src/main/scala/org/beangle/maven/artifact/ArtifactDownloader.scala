@@ -22,7 +22,7 @@ import java.io.IOException
 import java.util.Map
 import java.util.concurrent.{ ConcurrentHashMap, ExecutorService, Executors }
 
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConverters.mapAsScalaMap
 
 import org.beangle.maven.artifact.downloader.{ Downloader, RangeDownloader }
 
@@ -60,7 +60,7 @@ class ArtifactDownloader(private val remote: RemoteRepository, private val local
       print("\r")
       val sb = new StringBuilder()
       sb.append(splash(i % 4)).append("  ")
-      for ((key, value) <- statuses) {
+      for ((key, value) <- mapAsScalaMap(statuses)) {
         val downloader = value
         sb.append((downloader.downloaded / 1024 + "KB/" + (downloader.contentLength / 1024) + "KB    "))
       }

@@ -19,8 +19,6 @@
 package org.beangle.maven.plugin.util
 
 import org.apache.maven.artifact.Artifact
-//remove if not needed
-import scala.collection.JavaConversions._
 
 object Projects {
 
