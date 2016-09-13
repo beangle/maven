@@ -53,7 +53,7 @@ class DdlMojo extends AbstractMojo {
     val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()
     try {
-      getLog.debug("Using classpath:" + classPath.toString)
+      getLog.info("Using classpath:" + Hibernates.simplify(classPath))
       getLog.info("Hibernate DDl generating in " + folder.getCanonicalPath)
       val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.hibernate.tool.DdlGenerator",
         "org.hibernate.dialect." + dialectStr + "Dialect", folder.getCanonicalPath, locale)

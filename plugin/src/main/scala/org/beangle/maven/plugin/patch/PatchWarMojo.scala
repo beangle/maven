@@ -19,7 +19,7 @@
 package org.beangle.maven.plugin.patch
 
 import java.io.{ File, FileOutputStream }
-import scala.collection.JavaConversions.asScalaSet
+import scala.collection.JavaConverters.asScalaSet
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{ Component, Mojo, LifecyclePhase, ResolutionScope, Parameter }
 import org.apache.maven.project.MavenProject
