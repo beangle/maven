@@ -34,11 +34,11 @@ object Hibernates {
 
   val HibernateVersion = "4.3.1.Final"
 
-  val CommonsVersion = "4.5.1"
+  val CommonsVersion = "4.5.4"
 
-  val DataVersion = "4.4.0"
+  val DataVersion = "4.4.1"
 
-  add("org.scala", "scala-library", "2.12.0-M4")
+  add("org.scala", "scala-library", "2.12.0-M5")
 
   add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
 
@@ -68,7 +68,7 @@ object Hibernates {
 
   add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
 
-  add("org.javassist", "javassist", "3.18.1-GA")
+  add("org.javassist", "javassist", "3.20.0-GA")
 
   add("antlr", "antlr", "2.7.7")
 
@@ -94,6 +94,12 @@ object Hibernates {
       classPath.append(Strings.substringBetween(logurl.toString, "jar:file:", "!"))
     }
     classPath.toString
+  }
+
+  def simplify(classpath: String): String = {
+    val classpaths = Strings.split(classpath, File.pathSeparator)
+    val shorted = classpaths map (c => if (c.endsWith(".jar")) Strings.substringAfterLast(c, File.separator) else c)
+    Strings.join(shorted, " ")
   }
 
   private def addToClassPath(classPath: StringBuilder, localRepository: String, artifact: Artifact) {
