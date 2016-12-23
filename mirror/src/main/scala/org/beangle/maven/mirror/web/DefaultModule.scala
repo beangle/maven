@@ -18,7 +18,7 @@
  */
 package org.beangle.maven.mirror.web
 
-import org.beangle.commons.inject.bind.AbstractBindModule
+import org.beangle.commons.cdi.bind.AbstractBindModule
 
 /**
  * @author chaostone

@@ -19,20 +19,21 @@
 package org.beangle.maven.mirror.web
 
 import java.util.EnumSet
-import org.beangle.commons.web.session.HttpSessionEventPublisher
-import org.beangle.cdi.spring.web.ContextListener
 import org.beangle.webmvc.dispatch.Dispatcher
 import javax.servlet.{ DispatcherType, ServletContext }
+import org.beangle.commons.cdi.spring.web.ContextListener
 
 class Initializer extends org.beangle.commons.web.init.Initializer {
 
   override def onStartup(sc: ServletContext) {
     sc.setInitParameter("templatePath", "class://")
-    sc.setInitParameter("contextConfigLocation", "classpath:spring-context.xml")
-    sc.setInitParameter("childContextConfigLocation", "WebApplicationContext:Action@classpath:spring-web-context.xml")
 
-    addListener(new ContextListener)
-    val action = sc.addServlet("Action", new Dispatcher)
+    val ctxListener = new ContextListener
+    ctxListener.childContextConfigLocation = "WebApplicationContext:Action@classpath:spring-web-context.xml"
+    val container = ctxListener.loadContainer()
+    addListener(ctxListener)
+
+    val action = sc.addServlet("Action", new Dispatcher(container))
     action.addMapping("/*")
   }
 }
