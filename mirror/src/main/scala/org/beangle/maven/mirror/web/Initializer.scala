@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2016, Beangle Software.
+ * Copyright (c) 2005-2017, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,6 @@ class Initializer extends org.beangle.commons.web.init.Initializer {
     val container = ctxListener.loadContainer()
     addListener(ctxListener)
 
-    val action = sc.addServlet("Action", new Dispatcher(container))
-    action.addMapping("/*")
+    sc.addServlet("Action", new Dispatcher(container)).addMapping("/*")
   }
 }
