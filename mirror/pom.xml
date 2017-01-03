@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -14,6 +14,7 @@
   <properties>
     <bundle.symbolicName>org.beangle.maven.mirror</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.mirror</bundle.namespace>
+    <spring.version>4.0.4.RELEASE</spring.version>
   </properties>
 
   <description>
@@ -37,9 +38,19 @@
       <version>${beangle.mvc.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.beangle.cdi</groupId>
-      <artifactId>beangle-cdi-spring_2.12</artifactId>
-      <version>${beangle.cdi.version}</version>
+      <groupId>org.beangle.commons</groupId>
+      <artifactId>beangle-commons-cdi_2.12</artifactId>
+      <version>${beangle.commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>

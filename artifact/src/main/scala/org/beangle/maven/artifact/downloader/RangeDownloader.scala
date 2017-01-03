@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2016, Beangle Software.
+ * Copyright (c) 2005-2017, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
 
   var threads: Int = 20
 
-  var step: Int = 20 * 1024
+  var step: Int = 100 * 1024
 
   var executor: ExecutorService = Executors.newFixedThreadPool(threads)
 
@@ -37,7 +37,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
     val startAt = System.currentTimeMillis()
     this.status = new Downloader.Status(conn.getContentLengthLong)
     if (this.status.total <= 0 || this.status.total > java.lang.Integer.MAX_VALUE) {
-      throw new RuntimeException("Cannot download ${url} with size ${this.status.total}")
+      throw new RuntimeException(s"Cannot download ${url} with size ${this.status.total}")
     }
     val total = this.status.total.toInt
     val totalbuffer = Array.ofDim[Byte](total)
@@ -45,7 +45,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
     val tasks = new java.util.ArrayList[Callable[Integer]]
     while (begin < this.status.total) {
       val start = begin
-      val end = if (((start + step - 1) > total)) total else (start + step - 1)
+      val end = if (((start + step - 1) >= total)) (total - 1) else (start + step - 1)
       tasks.add(new Callable[Integer]() {
         def call(): java.lang.Integer = {
           val connection = resourceURL.openConnection().asInstanceOf[HttpURLConnection]
@@ -70,7 +70,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
       executor.invokeAll(tasks)
       executor.shutdown()
     } catch {
-      case e: InterruptedException => e.printStackTrace()
+      case e: Throwable => e.printStackTrace()
     }
     if (status.count.get == status.total) {
       val targetFile = new File(location)

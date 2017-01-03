@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2016, Beangle Software.
+ * Copyright (c) 2005-2017, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import org.beangle.maven.artifact.downloader.RangeDownloader
  */
 object Mirror {
   val local = SystemInfo.user.home + "/.m2/repository"
-  val remote = "http://central.maven.org/maven2"
+  val remote = SystemInfo.properties.getOrElse("M2_REMOTE", "http://central.maven.org/maven2")
 
   def local(filePath: String): File = {
     new File(local + filePath)
