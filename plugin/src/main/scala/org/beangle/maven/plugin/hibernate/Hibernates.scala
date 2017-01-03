@@ -1,7 +1,7 @@
 /*
  * Beangle, Agile Development Scaffold and Toolkit
  *
- * Copyright (c) 2005-2016, Beangle Software.
+ * Copyright (c) 2005-2017, Beangle Software.
  *
  * Beangle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,19 +34,17 @@ object Hibernates {
 
   val HibernateVersion = "4.3.1.Final"
 
-  val CommonsVersion = "4.5.4"
+  val CommonsVersion = "4.6.0"
 
-  val DataVersion = "4.4.1"
+  val DataVersion = "4.4.2"
 
-  add("org.scala", "scala-library", "2.12.0-M5")
+  add("org.scala", "scala-library", "2.12.1")
 
   add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
 
-  add("org.beangle.commons", "beangle-commons-i18n_2.12", CommonsVersion)
-
   add("org.beangle.commons", "beangle-commons-text_2.12", CommonsVersion)
 
-  add("org.beangle.data", "beangle-data-model_2.12", DataVersion)
+  add("org.beangle.commons", "beangle-commons-model_2.12", CommonsVersion)
 
   add("org.beangle.data", "beangle-data-hibernate_2.12", DataVersion)
 
