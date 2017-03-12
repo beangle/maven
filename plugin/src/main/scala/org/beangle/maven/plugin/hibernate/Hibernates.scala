@@ -34,9 +34,9 @@ object Hibernates {
 
   val HibernateVersion = "4.3.1.Final"
 
-  val CommonsVersion = "4.6.0"
+  val CommonsVersion = "4.6.1"
 
-  val DataVersion = "4.4.2"
+  val DataVersion = "4.4.3"
 
   add("org.scala", "scala-library", "2.12.1")
 
