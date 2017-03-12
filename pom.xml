@@ -10,7 +10,7 @@
   <artifactId>beangle-maven-parent</artifactId>
   <packaging>pom</packaging>
   <name>Beangle Maven Toolkit</name>
-  <version>0.2.8</version>
+  <version>0.2.9</version>
 
   <properties>
     <mvnVersion>3.3.3</mvnVersion>
