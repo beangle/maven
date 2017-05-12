@@ -29,21 +29,15 @@ class Mirror(val remote: String) {
 
   import Repository._
   def exists(filePath: String): Boolean = {
-    if (localExists(filePath)) true
-    else {
-      new RangeDownloader("download", remote + filePath, localPath(filePath)).start()
-      localExists(filePath)
-    }
+    new RangeDownloader("download", remote + filePath, localPath(filePath)).start()
+    localExists(filePath)
   }
 
   def get(filePath: String): File = {
-    val localPath = Repository.local + filePath
-    val localFile = new File(localPath)
-    if (localFile.exists) localFile
-    else {
-      new RangeDownloader("download", remote + filePath, localPath).start()
-      localFile
-    }
+    val path = localPath(filePath)
+    val localFile = new File(path)
+    new RangeDownloader("download", remote + filePath, path).start()
+    localFile
   }
 
 }

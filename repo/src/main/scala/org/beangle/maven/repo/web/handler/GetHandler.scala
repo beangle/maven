@@ -67,7 +67,11 @@ class GetHandler extends Handler {
     val writer = response.getWriter
     writer.write(s"<!DOCTYPE html><head><title>Index of $uri</title></head><body>")
     writer.write(s"<h1>Index of $uri</h1><hr/><pre>")
-    if (uri != "/") writer.write("<a href=\"../\">../</a>\n")
+    //uri != "/" && uri != ""
+    if (uri.length > 1) {
+      if (uri.endsWith("/")) writer.write("<a href=\"../\">../</a>\n")
+      else writer.write("<a href=\"./\">../</a>\n")
+    }
     val buffer = new StringBuilder(200)
     val items = dir.list()
     var prefix = ""

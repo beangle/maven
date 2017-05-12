@@ -59,13 +59,19 @@ object Repository {
   }
 
   def exists(filePath: String): Boolean = {
-    mirrors.find(x => x.exists(filePath)).isDefined
+    if (localExists(filePath)) true
+    else mirrors.find(x => x.exists(filePath)).isDefined
   }
 
   def get(filePath: String): File = {
-    mirrors.find(x => x.exists(filePath)) match {
-      case Some(m) => m.get(filePath)
-      case None    => null
+    val localFile = local(filePath)
+    if (localFile.exists) {
+      localFile
+    } else {
+      mirrors.find(x => x.exists(filePath)) match {
+        case Some(m) => m.get(filePath)
+        case None    => null
+      }
     }
   }
 
