@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web
+package org.beangle.maven.repo.web
 
 import org.beangle.commons.cdi.bind.AbstractBindModule
 

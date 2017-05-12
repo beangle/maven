@@ -16,24 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web.handler
+package org.beangle.maven.repo.web.handler
 
-import java.io.FileInputStream
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.annotation.spi
-import org.beangle.maven.mirror.service.Mirror
-import org.beangle.webmvc.execution.Handler
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-import java.io.IOException
-import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.time.Stopwatch
-import org.beangle.commons.web.io.RangedWagon
-import java.io.File
-import org.beangle.commons.activation.MimeTypeProvider
-import org.beangle.webmvc.api.util.CacheControl
+import java.io.{ File, FileInputStream }
 import java.text.SimpleDateFormat
 import java.util.Arrays
+
+import org.beangle.commons.activation.MimeTypeProvider
+import org.beangle.commons.lang.Strings
+import org.beangle.commons.web.io.RangedWagon
 import org.beangle.commons.web.util.RequestUtils
+import org.beangle.maven.repo.service.Repository
+import org.beangle.webmvc.api.util.CacheControl
+import org.beangle.webmvc.execution.Handler
+
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+
 /**
  * @author chaostone
  */
@@ -43,15 +41,15 @@ class GetHandler extends Handler {
     val filePath = RequestUtils.getServletPath(request)
 
     if (filePath.endsWith("/")) {
-      val localFile = Mirror.local(filePath)
+      val localFile = Repository.local(filePath)
       if (localFile.exists) listDir(filePath, localFile, request, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)
     } else {
-      if (Mirror.exists(filePath)) {
-        val localFile = Mirror.local(filePath)
+      if (Repository.exists(filePath)) {
+        val localFile = Repository.local(filePath)
         if (localFile.isDirectory) {
           listDir(filePath, localFile, request, response)
         } else {
-          val file = Mirror.get(filePath)
+          val file = Repository.get(filePath)
           val ext = Strings.substringAfterLast(filePath, ".")
           if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
           if (!filePath.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)

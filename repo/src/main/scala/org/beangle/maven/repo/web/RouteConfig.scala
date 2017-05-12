@@ -16,23 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web.handler
+package org.beangle.maven.repo.web
 
-import org.beangle.commons.lang.annotation.spi
-import org.beangle.maven.mirror.service.Mirror
-import org.beangle.webmvc.api.action.ActionSupport
-import org.beangle.webmvc.execution.Handler
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-import javax.servlet.http.HttpServletResponse.{ SC_NOT_FOUND, SC_OK }
-import org.beangle.commons.web.util.RequestUtils
+import org.beangle.webmvc.dispatch.{ Route, RouteProvider }
+import org.beangle.commons.http.HttpMethods._
+import org.beangle.maven.repo.web.handler.GetHandler
+import org.beangle.maven.repo.web.handler.HeadHandler
+import org.beangle.maven.repo.web.handler.AboutHandler
+
 /**
  * @author chaostone
  */
-class HeadHandler extends Handler {
+class RouteConfig extends RouteProvider {
 
-  def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
-    val filePath = RequestUtils.getServletPath(request)
-    response.setStatus(if (Mirror.exists(filePath)) SC_OK else SC_NOT_FOUND)
+  def routes: Iterable[Route] = {
+    List(new Route(GET, "/{path*}", new GetHandler),
+      new Route(HEAD, "/{path*}", new HeadHandler),
+      new Route(GET, "/about", new AboutHandler))
   }
-
 }

@@ -16,23 +16,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web
+package org.beangle.maven.repo.service
 
-import java.util.EnumSet
-import org.beangle.webmvc.dispatch.Dispatcher
-import javax.servlet.{ DispatcherType, ServletContext }
-import org.beangle.commons.cdi.spring.web.ContextListener
+import org.beangle.commons.lang.SystemInfo
+import java.io.File
+import org.beangle.maven.artifact.downloader.RangeDownloader
 
-class Initializer extends org.beangle.commons.web.init.Initializer {
+/**
+ * @author chaostone
+ */
+class Mirror(val remote: String) {
 
-  override def onStartup(sc: ServletContext) {
-    sc.setInitParameter("templatePath", "class://")
-
-    val ctxListener = new ContextListener
-    ctxListener.childContextConfigLocation = "WebApplicationContext:Action@classpath:spring-web-context.xml"
-    val container = ctxListener.loadContainer()
-    addListener(ctxListener)
-
-    sc.addServlet("Action", new Dispatcher(container)).addMapping("/*")
+  import Repository._
+  def exists(filePath: String): Boolean = {
+    if (localExists(filePath)) true
+    else {
+      new RangeDownloader("download", remote + filePath, localPath(filePath)).start()
+      localExists(filePath)
+    }
   }
+
+  def get(filePath: String): File = {
+    val localPath = Repository.local + filePath
+    val localFile = new File(localPath)
+    if (localFile.exists) localFile
+    else {
+      new RangeDownloader("download", remote + filePath, localPath).start()
+      localFile
+    }
+  }
+
 }

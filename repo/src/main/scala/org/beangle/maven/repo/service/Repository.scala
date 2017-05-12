@@ -16,40 +16,56 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.service
+package org.beangle.maven.repo.service
 
 import org.beangle.commons.lang.SystemInfo
 import java.io.File
 import org.beangle.maven.artifact.downloader.RangeDownloader
+import org.beangle.commons.collection.Collections
+import org.beangle.commons.lang.Strings
 
 /**
  * @author chaostone
  */
-object Mirror {
-  val local = SystemInfo.user.home + "/.m2/repository"
-  val remote = SystemInfo.properties.getOrElse("M2_REMOTE", "http://central.maven.org/maven2")
+object Repository {
 
+  val local = SystemInfo.user.home + "/.m2/repository"
+
+  val mirrors = Collections.newBuffer[Mirror]
+
+  private def init() {
+    SystemInfo.properties.get("M2_REMOTES") foreach { remotes =>
+      Strings.split(remotes) foreach { name =>
+        val remote =
+          name match {
+            case "central" => "http://central.maven.org/maven2"
+            case "aliyun"  => "http://maven.aliyun.com/nexus/content/groups/public"
+            case _         => name
+          }
+        mirrors += new Mirror(remote)
+      }
+    }
+  }
   def local(filePath: String): File = {
     new File(local + filePath)
   }
 
+  def localExists(filePath: String): Boolean = {
+    new File(local + filePath).exists()
+  }
+
+  def localPath(filePath: String): String = {
+    local + filePath
+  }
+
   def exists(filePath: String): Boolean = {
-    val localPath = local + filePath
-    val localFile = new File(localPath)
-    if (localFile.exists) true
-    else {
-      new RangeDownloader("download", remote + filePath, localPath).start()
-      localFile.exists
-    }
+    mirrors.find(x => x.exists(filePath)).isDefined
   }
 
   def get(filePath: String): File = {
-    val localPath = local + filePath
-    val localFile = new File(localPath)
-    if (localFile.exists) localFile
-    else {
-      new RangeDownloader("download", remote + filePath, localPath).start()
-      localFile
+    mirrors.find(x => x.exists(filePath)) match {
+      case Some(m) => m.get(filePath)
+      case None    => null
     }
   }
 
