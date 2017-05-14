@@ -56,7 +56,7 @@ class GetHandler extends Handler {
           wagon.copy(new FileInputStream(file), request, response)
         }
       } else {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+        response.sendRedirect(Repository.redirectTo + filePath);
       }
     }
   }

@@ -33,6 +33,8 @@ object Repository {
 
   val mirrors = Collections.newBuffer[Mirror]
 
+  val redirectTo = SystemInfo.properties.get("M2_403").getOrElse("http://maven.aliyun.com/nexus/content/groups/public")
+
   private def init() {
     SystemInfo.properties.get("M2_REMOTES") foreach { remotes =>
       Strings.split(remotes) foreach { name =>

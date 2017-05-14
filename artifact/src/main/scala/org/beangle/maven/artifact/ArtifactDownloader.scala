@@ -26,7 +26,7 @@ import scala.collection.JavaConverters.mapAsScalaMap
 
 import org.beangle.maven.artifact.downloader.{ Downloader, RangeDownloader }
 
-class ArtifactDownloader(private val remote: RemoteRepository, private val local: LocalRepository) {
+class ArtifactDownloader(private val remote: Repository.Remote, private val local: Repository.Local) {
 
   private var statuses: Map[String, Downloader] = new ConcurrentHashMap[String, Downloader]()
 

@@ -18,5 +18,13 @@
  */
 package org.beangle.maven.artifact
 
-case class Artifact(val groupId: String, val artifactId: String, val version: String)
-   
+case class Artifact(val groupId: String, val artifactId: String,
+                    val version: String, val classifier: Option[String] = None, val packaging: String = "jar") {
+
+  def md5: Artifact = {
+    Artifact(groupId, artifactId, version, classifier, packaging + ".md5");
+  }
+}
+
+case class Diff(val groupId: String, val artifactId: String,
+                oldVersion: String, newVersion: String, val classifier: Option[String], packaging: String = "jar")

@@ -16,22 +16,46 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.artifact;
 
 import java.io.File
-import LocalRepository._
 
-object LocalRepository {
+object Repository {
 
-  val Maven2 = "maven2"
+  class Remote(val layout: Layout, baseUrl: String) {
 
-  val Ivy2 = "ivy2"
+    val httpBase = if (!(baseUrl.startsWith("http://") || baseUrl.startsWith("https://"))) "http://" + baseUrl else baseUrl
 
-  def findBase(layout: String, base: String): String = {
+    val base = if (httpBase.endsWith("/")) httpBase.substring(0, httpBase.length - 1) else httpBase
+
+    def this() {
+      this(Maven2, "http://central.maven.org/maven2")
+    }
+
+    def url(artifact: Artifact): String = {
+      base + layout.path(artifact)
+    }
+  }
+
+  class Local(val layout: Layout, ibase: String) {
+
+    val base: String = findLocalBase(layout, ibase)
+    new File(this.base).mkdirs()
+
+    def this() {
+      this(Maven2, null)
+    }
+
+    def path(artifact: Artifact): String = {
+      base + layout.path(artifact)
+    }
+  }
+
+  private def findLocalBase(layout: Layout, base: String): String = {
     if (null == base) {
       if (layout == Maven2) {
         System.getProperty("user.home") + "/.m2/repository"
-      } else if (layout == "ivy2") {
+      } else if (layout == Ivy2) {
         System.getProperty("user.home") + "/.ivy2/cache"
       } else {
         throw new RuntimeException("Do not support layout $layout,Using maven2 or ivy2")
@@ -40,31 +64,5 @@ object LocalRepository {
       if (base.endsWith("/")) base.substring(0, base.length - 1) else base
     }
   }
-}
 
-class LocalRepository(val layout: String, ibase: String) {
-
-  val base: String = findBase(layout, ibase)
-
-  new File(this.base).mkdirs()
-
-  def this() {
-    this(Maven2, null)
-  }
-
-  def path(artifact: Artifact): String = {
-    if (layout == Maven2) {
-      base + "/" + artifact.groupId.replace('.', '/') + "/" +
-        artifact.artifactId + "/" +
-        artifact.version + "/" +
-        artifact.artifactId + "-" +
-        artifact.version + ".jar"
-    } else if (layout == Ivy2) {
-      base + "/" + artifact.groupId + "/" + artifact.artifactId +
-        "/jars/" + artifact.artifactId +
-        "-" + artifact.version + ".jar"
-    } else {
-      throw new RuntimeException("Do not support layout $layout,Using maven2 or ivy2")
-    }
-  }
 }
