@@ -20,6 +20,7 @@ package org.beangle.maven.artifact.downloader
 
 import java.io.{ Closeable, File, IOException }
 import java.net.{ HttpURLConnection, URL }
+import java.net.HttpURLConnection._
 
 abstract class AbstractDownloader(val name: String, val url: String, protected val location: String) extends Downloader {
   protected var status: Downloader.Status = null
@@ -38,30 +39,49 @@ abstract class AbstractDownloader(val name: String, val url: String, protected v
 
     val resourceURL = new URL(url)
     val urlStatus = touchUrl(resourceURL)
-    if (null != urlStatus) {
-      println("\r" + urlStatus + " " + url)
+    if (null == urlStatus._2) {
+      println("\r" + toString(urlStatus._1) + " " + url)
       return
     }
     file.getParentFile.mkdirs()
-    downloading()
+    downloading(urlStatus._2)
   }
 
-  protected def downloading(): Unit
+  protected def downloading(resource: URL): Unit
 
-  protected def touchUrl(url: URL): String = {
+  private def toString(httpCode: Int): String = {
+    httpCode match {
+      case HTTP_OK           => "OK"
+      case HTTP_FORBIDDEN    => "Access denied!"
+      case HTTP_NOT_FOUND    => "Not Found"
+      case HTTP_UNAUTHORIZED => "Access denied"
+      case code: Any         => String.valueOf(code)
+    }
+  }
+
+  protected def touchUrl(url: URL): Tuple2[Int, URL] = {
     try {
-      val headConnection = url.openConnection().asInstanceOf[HttpURLConnection]
-      headConnection.setRequestMethod("HEAD")
-      headConnection.setDoOutput(true)
-      headConnection.getResponseCode match {
-        case HttpURLConnection.HTTP_OK           => null
-        case HttpURLConnection.HTTP_FORBIDDEN    => "Access denied!"
-        case HttpURLConnection.HTTP_NOT_FOUND    => "Not Found"
-        case HttpURLConnection.HTTP_UNAUTHORIZED => "Access denied"
-        case code: Any                           => String.valueOf(code)
+      val hc = url.openConnection().asInstanceOf[HttpURLConnection]
+      hc.setRequestMethod("HEAD")
+      hc.setDoOutput(true)
+      val rc = hc.getResponseCode
+      rc match {
+        case HTTP_OK => (rc, url)
+        case HTTP_MOVED_TEMP | HTTP_MOVED_PERM =>
+          val loc = hc.getHeaderField("Location")
+          if (null == loc) {
+            (rc, null)
+          } else {
+            if (loc.startsWith("http:") || loc.startsWith("https:")) {
+              (rc, new URL(loc))
+            } else {
+              (rc, new URL(url.getProtocol + "://" + url.getHost + ":" + url.getPort + loc))
+            }
+          }
+        case _ => (rc, null)
       }
     } catch {
-      case e: IOException => "Error transferring file: " + e.getMessage
+      case e: IOException => (-1, null)
     }
   }
 

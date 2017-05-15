@@ -31,9 +31,9 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
 
   var executor: ExecutorService = Executors.newFixedThreadPool(threads)
 
-  protected override def downloading() {
-    val resourceURL = new URL(url)
-    val conn = resourceURL.openConnection()
+  protected override def downloading(resource: URL) {
+    println("Downloading " + resource);
+    val conn = resource.openConnection()
     val startAt = System.currentTimeMillis()
     this.status = new Downloader.Status(conn.getContentLengthLong)
     if (this.status.total <= 0 || this.status.total > java.lang.Integer.MAX_VALUE) {
@@ -47,8 +47,8 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
       val start = begin
       val end = if (((start + step - 1) >= total)) (total - 1) else (start + step - 1)
       tasks.add(new Callable[Integer]() {
-        def call(): java.lang.Integer = {
-          val connection = resourceURL.openConnection().asInstanceOf[HttpURLConnection]
+        def call(): Integer = {
+          val connection = resource.openConnection().asInstanceOf[HttpURLConnection]
           connection.setRequestProperty("RANGE", "bytes=" + start + "-" + end)
           val input = connection.getInputStream
           val buffer = Array.ofDim[Byte](1024)
@@ -61,7 +61,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
             n = input.read(buffer)
           }
           IOs.close(input)
-          return end
+          end
         }
       })
       begin += step

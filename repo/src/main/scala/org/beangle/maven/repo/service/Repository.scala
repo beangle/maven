@@ -24,6 +24,7 @@ import org.beangle.maven.artifact.downloader.RangeDownloader
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 
+trait
 /**
  * @author chaostone
  */
@@ -33,48 +34,22 @@ object Repository {
 
   val mirrors = Collections.newBuffer[Mirror]
 
-  val redirectTo = SystemInfo.properties.get("M2_403").getOrElse("http://maven.aliyun.com/nexus/content/groups/public")
+  val remote: Mirror = _
+
+  //  val M2_302 = SystemInfo.properties.get("M2_302").getOrElse("http://maven.aliyun.com/nexus/content/groups/public")
 
   private def init() {
-    SystemInfo.properties.get("M2_REMOTES") foreach { remotes =>
-      Strings.split(remotes) foreach { name =>
-        val remote =
-          name match {
-            case "central" => "http://central.maven.org/maven2"
-            case "aliyun"  => "http://maven.aliyun.com/nexus/content/groups/public"
-            case _         => name
-          }
-        mirrors += new Mirror(remote)
-      }
-    }
-  }
-  def local(filePath: String): File = {
-    new File(local + filePath)
-  }
-
-  def localExists(filePath: String): Boolean = {
-    new File(local + filePath).exists()
-  }
-
-  def localPath(filePath: String): String = {
-    local + filePath
-  }
-
-  def exists(filePath: String): Boolean = {
-    if (localExists(filePath)) true
-    else mirrors.find(x => x.exists(filePath)).isDefined
-  }
-
-  def get(filePath: String): File = {
-    val localFile = local(filePath)
-    if (localFile.exists) {
-      localFile
-    } else {
-      mirrors.find(x => x.exists(filePath)) match {
-        case Some(m) => m.get(filePath)
-        case None    => null
-      }
-    }
+    //    SystemInfo.properties.get("M2_REMOTES") foreach { remotes =>
+    //      Strings.split(remotes) foreach { name =>
+    //        val remote =
+    //          name match {
+    //            case "central" => "http://central.maven.org/maven2"
+    //            case "aliyun"  => "http://maven.aliyun.com/nexus/content/groups/public"
+    //            case _         => name
+    //          }
+    //        mirrors += new Mirror(remote)
+    //      }
+    //    }
   }
 
 }

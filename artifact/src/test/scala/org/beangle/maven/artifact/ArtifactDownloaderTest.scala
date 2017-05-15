@@ -26,7 +26,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ArtifactDownloaderTest extends FunSpec with Matchers {
 
-  var downloader = new ArtifactDownloader(new Repository.Remote(), new Repository.Local(Maven2, "/tmp/repository"))
+  var downloader = new ArtifactDownloader(new Repo.Remote(), new Repo.Local("/tmp/repository", Maven2))
 
   describe("artifact downloader") {
     it("can download such jars") {

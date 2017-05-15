@@ -24,7 +24,7 @@ import org.beangle.commons.io.IOs
 
 class DefaultDownloader(id: String, url: String, location: String) extends AbstractDownloader(id, url, location) {
 
-  protected override def downloading() {
+  protected override def downloading(resource: URL) {
     var input: InputStream = null
     var output: OutputStream = null
     val startAt = System.currentTimeMillis()
@@ -32,10 +32,9 @@ class DefaultDownloader(id: String, url: String, location: String) extends Abstr
       val file = new File(location + ".part")
       file.delete()
       val buffer = Array.ofDim[Byte](1024 * 4)
-      val resourceURL = new URL(url)
-      val conn = resourceURL.openConnection()
+      val conn = resource.openConnection()
       this.status = new Downloader.Status(conn.getContentLengthLong)
-      input = resourceURL.openConnection().getInputStream
+      input = resource.openConnection().getInputStream
       output = new FileOutputStream(file)
       var n = input.read(buffer)
       while (-1 != n) {

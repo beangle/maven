@@ -23,7 +23,7 @@ import org.beangle.maven.repo.service.Repository
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.execution.Handler
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-import javax.servlet.http.HttpServletResponse.{ SC_NOT_FOUND, SC_OK }
+import javax.servlet.http.HttpServletResponse.{ SC_MOVED_TEMPORARILY, SC_OK }
 import org.beangle.commons.web.util.RequestUtils
 /**
  * @author chaostone
@@ -32,7 +32,12 @@ class HeadHandler extends Handler {
 
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val filePath = RequestUtils.getServletPath(request)
-    response.setStatus(if (Repository.exists(filePath)) SC_OK else SC_NOT_FOUND)
+    if (Repository.exists(filePath)) {
+      response.setStatus(SC_OK)
+    } else {
+      response.setStatus(SC_MOVED_TEMPORARILY)
+      response.addHeader("Location", Repository.M2_302 + filePath)
+    }
   }
 
 }

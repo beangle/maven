@@ -31,6 +31,8 @@ import org.beangle.webmvc.api.util.CacheControl
 import org.beangle.webmvc.execution.Handler
 
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import org.beangle.maven.repo.service.RepoService
+import org.beangle.maven.artifact.Repo
 
 /**
  * @author chaostone
@@ -39,26 +41,41 @@ class GetHandler extends Handler {
   val wagon = new RangedWagon
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val filePath = RequestUtils.getServletPath(request)
-
+    val repos = RepoService.repos
+    val local = repos.local
     if (filePath.endsWith("/")) {
-      val localFile = Repository.local(filePath)
+      val localFile = local.file(filePath)
       if (localFile.exists) listDir(filePath, localFile, request, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)
     } else {
-      if (Repository.exists(filePath)) {
-        val localFile = Repository.local(filePath)
-        if (localFile.isDirectory) {
-          listDir(filePath, localFile, request, response)
-        } else {
-          val file = Repository.get(filePath)
-          val ext = Strings.substringAfterLast(filePath, ".")
-          if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
-          if (!filePath.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
-          wagon.copy(new FileInputStream(file), request, response)
-        }
+      val localFile = local.file(filePath)
+      if (localFile.exists) {
+        if (localFile.isDirectory) listDir(filePath, localFile, request, response)
+        else transfer(localFile, request, response)
       } else {
-        response.sendRedirect(Repository.redirectTo + filePath);
+        if (filePath.endsWith(".diff")) {
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+        } else {
+          repos.find(filePath) match {
+            case mirror: Repo.Mirror =>
+              if (mirror.cacheable) {
+                transfer(repos.download(filePath, mirror), request, response)
+              } else {
+                response.sendRedirect(mirror.base + filePath)
+              }
+            case remote: Repo.Remote =>
+              transfer(repos.download(filePath, remote), request, response)
+          }
+        }
       }
     }
+  }
+
+  private def transfer(file: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
+    val fileName = file.getName
+    val ext = Strings.substringAfterLast(fileName, ".")
+    if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
+    if (!fileName.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
+    wagon.copy(new FileInputStream(file), request, response)
   }
 
   private def listDir(uri: String, dir: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
