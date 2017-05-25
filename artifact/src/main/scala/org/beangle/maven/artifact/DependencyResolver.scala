@@ -46,7 +46,7 @@ object BeangleResolver {
     if (args.length > 2) remote = args(2)
     val resolver = new BeangleResolver()
     val artifacts = resolver.resolve(dependencyFile.toURI().toURL())
-    val remoteRepo = new Repo.Remote("remote", remote, Maven2)
+    val remoteRepo = new Repo.Remote("remote", remote, Layout.Maven2)
     val localRepo = new Repo.Local(local)
     new ArtifactDownloader(remoteRepo, localRepo).download(artifacts)
   }

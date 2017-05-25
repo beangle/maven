@@ -26,7 +26,6 @@ import org.beangle.commons.activation.MimeTypeProvider
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.web.io.RangedWagon
 import org.beangle.commons.web.util.RequestUtils
-import org.beangle.maven.repo.service.Repository
 import org.beangle.webmvc.api.util.CacheControl
 import org.beangle.webmvc.execution.Handler
 
@@ -56,14 +55,14 @@ class GetHandler extends Handler {
           response.setStatus(HttpServletResponse.SC_NOT_FOUND)
         } else {
           repos.find(filePath) match {
-            case mirror: Repo.Mirror =>
-              if (mirror.cacheable) {
-                transfer(repos.download(filePath, mirror), request, response)
+            case Some(repo) =>
+              if (repos.cacheable) {
+                transfer(repos.download(filePath, repo), request, response)
               } else {
-                response.sendRedirect(mirror.base + filePath)
+                response.sendRedirect(repo.base + filePath)
               }
-            case remote: Repo.Remote =>
-              transfer(repos.download(filePath, remote), request, response)
+            case None =>
+              response.setStatus(HttpServletResponse.SC_NOT_FOUND)
           }
         }
       }
