@@ -35,6 +35,11 @@ import org.beangle.maven.artifact.util.Delta
  * <li>3. Detect resource status before downloading
  * </p>
  */
+object ArtifactDownloader {
+  def apply(remote: String, base: String = null): ArtifactDownloader = {
+    new ArtifactDownloader(Repo.remote(remote), Repo.local(base))
+  }
+}
 class ArtifactDownloader(private val remote: Repo.Remote, private val local: Repo.Local) {
 
   private val statuses = new ConcurrentHashMap[String, Downloader]()
@@ -47,9 +52,11 @@ class ArtifactDownloader(private val remote: Repo.Remote, private val local: Rep
 
     for (artifact <- artifacts) {
       if (!local.file(artifact).exists) {
-        val sha1 = artifact.sha1
-        if (!local.file(sha1).exists()) {
-          sha1s += sha1
+        if (!artifact.packaging.endsWith("sha1")) {
+          val sha1 = artifact.sha1
+          if (!local.file(sha1).exists()) {
+            sha1s += sha1
+          }
         }
         local.lastest(artifact) foreach { lastest =>
           diffs += Diff(lastest, artifact.version)
@@ -64,6 +71,7 @@ class ArtifactDownloader(private val remote: Repo.Remote, private val local: Rep
     for (diff <- diffs) {
       val diffFile = local.file(diff)
       if (diffFile.exists) {
+        println("Patching " + diff)
         Delta.patch(local.url(diff.older), local.url(diff.newer), local.url(diff))
         newers += diff.newer
       }

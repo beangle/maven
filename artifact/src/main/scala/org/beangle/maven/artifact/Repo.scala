@@ -31,6 +31,13 @@ import org.beangle.commons.collection.Collections
 
 object Repo {
 
+  def local(base: String): Local = {
+    new Local(base, Layout.Maven2)
+  }
+
+  def remote(base: String): Remote = {
+    new Remote(base, base, Layout.Maven2)
+  }
   abstract class Repository {
     def id: String
     def base: String
@@ -47,7 +54,7 @@ object Repo {
     }
   }
 
-  class Local(ibase: String = null, val layout: Layout = Maven2) extends Repository {
+  class Local(ibase: String = null, val layout: Layout = Layout.Maven2) extends Repository {
     def id = "local"
     def pattern = "*"
     val base = findLocalBase(layout, ibase)
@@ -68,8 +75,9 @@ object Repo {
     def verifySha1(artifact: Artifact): Boolean = {
       val sha1 = artifact.sha1
       if (exists(artifact) && exists(sha1)) {
+        println("Verify " + sha1)
         val sha1sum = Delta.sha1(url(artifact))
-        val sha1inFile = IOs.readString(new FileInputStream(url(sha1)), Charsets.UTF_8)
+        val sha1inFile = IOs.readString(new FileInputStream(url(sha1)), Charsets.UTF_8).trim()
         if (!sha1sum.startsWith(sha1inFile)) {
           println("Error sha1 for " + artifact + ",Remove it.")
           new File(url(artifact)).delete()
@@ -110,26 +118,40 @@ object Repo {
     val AliyunURL = "http://maven.aliyun.com/nexus/content/groups/public"
   }
 
-  class Remote(val id: String, var base: String, val layout: Layout = Maven2) extends Repository {
+  class Remote(val id: String, var base: String, val layout: Layout = Layout.Maven2) extends Repository {
     this.base = normalizeUrl(base)
     def this() {
-      this("central", Remote.CentralURL, Maven2)
+      this("central", Remote.CentralURL, Layout.Maven2)
     }
 
     override def exists(filePath: String): Boolean = {
       try {
-        val headConnection = new URL(base + filePath).openConnection().asInstanceOf[HttpURLConnection]
-        headConnection.setRequestMethod("HEAD")
-        headConnection.setDoOutput(true)
-        headConnection.getResponseCode() == HttpURLConnection.HTTP_OK
+        val hc = new URL(base + filePath).openConnection().asInstanceOf[HttpURLConnection]
+        hc.setRequestMethod("HEAD")
+        hc.setDoOutput(true)
+        hc.getResponseCode == HttpURLConnection.HTTP_OK
       } catch {
         case e: Throwable => false
       }
     }
+
+    override def hashCode: Int = {
+      id.hashCode
+    }
+
+    override def equals(any: Any): Boolean = {
+      any match {
+        case r: Remote => r.id.equals(this.id)
+        case _         => false
+      }
+    }
+    override def toString: String = {
+      id + ":" + base
+    }
   }
 
-  class Mirror(id: String, base: String, val pattern: String,
-               layout: Layout, val cacheable: Boolean) extends Remote(id, base, layout) {
+  class Mirror(id: String, base: String, val pattern: String = "*",
+               layout: Layout = Layout.Maven2) extends Remote(id, base, layout) {
     def matches(filePath: String): Boolean = {
       (pattern == "*" || filePath.startsWith(pattern))
     }
@@ -146,9 +168,9 @@ object Repo {
 
   private def findLocalBase(layout: Layout, base: String): String = {
     if (null == base) {
-      if (layout == Maven2) {
+      if (layout == Layout.Maven2) {
         System.getProperty("user.home") + "/.m2/repository"
-      } else if (layout == Ivy2) {
+      } else if (layout == Layout.Ivy2) {
         System.getProperty("user.home") + "/.ivy2/cache"
       } else {
         throw new RuntimeException("Do not support layout $layout,Using maven2 or ivy2")

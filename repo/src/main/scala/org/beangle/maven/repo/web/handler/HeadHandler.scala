@@ -19,12 +19,14 @@
 package org.beangle.maven.repo.web.handler
 
 import org.beangle.commons.lang.annotation.spi
-import org.beangle.maven.repo.service.Repository
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.execution.Handler
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-import javax.servlet.http.HttpServletResponse.{ SC_MOVED_TEMPORARILY, SC_OK }
+import javax.servlet.http.HttpServletResponse.{ SC_NOT_FOUND, SC_OK }
 import org.beangle.commons.web.util.RequestUtils
+import org.beangle.maven.repo.service.RepoService
+import org.beangle.maven.artifact.Repo
+
 /**
  * @author chaostone
  */
@@ -32,11 +34,26 @@ class HeadHandler extends Handler {
 
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val filePath = RequestUtils.getServletPath(request)
-    if (Repository.exists(filePath)) {
+    val repos = RepoService.repos
+    val local = repos.local
+    val localFile = local.file(filePath)
+    if (localFile.exists) {
       response.setStatus(SC_OK)
     } else {
-      response.setStatus(SC_MOVED_TEMPORARILY)
-      response.addHeader("Location", Repository.M2_302 + filePath)
+      if (filePath.endsWith(".diff")) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+      } else {
+        repos.find(filePath) match {
+          case Some(repo) =>
+            if (repos.cacheable) {
+              response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY)
+              response.setHeader("Location", repo.base + filePath)
+            } else {
+              response.setStatus(HttpServletResponse.SC_OK)
+            }
+          case None => response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+        }
+      }
     }
   }
 

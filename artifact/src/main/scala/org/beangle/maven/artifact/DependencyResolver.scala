@@ -43,10 +43,10 @@ object BeangleResolver {
     var remote = Repo.Remote.AliyunURL
     var local: String = null
     if (args.length > 1) remote = args(1)
-    if (args.length > 2) remote = args(2)
+    if (args.length > 2) local = args(2)
     val resolver = new BeangleResolver()
     val artifacts = resolver.resolve(dependencyFile.toURI().toURL())
-    val remoteRepo = new Repo.Remote("remote", remote, Maven2)
+    val remoteRepo = new Repo.Remote("remote", remote, Layout.Maven2)
     val localRepo = new Repo.Local(local)
     new ArtifactDownloader(remoteRepo, localRepo).download(artifacts)
   }

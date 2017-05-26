@@ -6,7 +6,7 @@ import org.beangle.maven.artifact.downloader.RangeDownloader
 
 trait Repos {
 
-  def find(path: String): Repo.Remote
+  def find(path: String): Option[Repo.Remote]
 
   def local: Repo.Local
 
@@ -17,18 +17,22 @@ trait Repos {
     }
     localFile
   }
+  var cacheable: Boolean = true
 }
 
 class ProxyRepos(val local: Repo.Local, val remote: Repo.Remote) extends Repos {
-  override def find(path: String): Repo.Remote = {
-    remote
+  override def find(path: String): Option[Repo.Remote] = {
+    if (remote.exists(path)) Some(remote) else None
   }
 }
 
 class MirrorRepos(val local: Repo.Local, val mirrors: List[Repo.Mirror], val backend: Repo.Mirror) extends Repos {
-  override def find(path: String): Repo.Remote = {
+  override def find(path: String): Option[Repo.Remote] = {
     val matches = mirrors.filter(x => x.matches(path))
     val exists = matches.find(x => x.exists(path))
-    exists.getOrElse(backend)
+    exists match {
+      case Some(e) => exists
+      case None    => if (backend.exists(path)) Some(backend) else None
+    }
   }
 }

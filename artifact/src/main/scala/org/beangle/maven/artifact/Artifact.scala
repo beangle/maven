@@ -50,7 +50,7 @@ case class Artifact(val groupId: String, val artifactId: String,
 
   override def toString: String = {
     groupId + ":" + artifactId + ":" + version + (if (classifier.isEmpty) "" else (":" + classifier.get)) + ":" +
-      packaging;
+      packaging
   }
 
   def forVersion(newVersion: String): Artifact = {
@@ -89,5 +89,9 @@ case class Diff(val groupId: String, val artifactId: String,
 
   def newer: Artifact = {
     new Artifact(groupId, artifactId, newVersion, classifier, packaging.replace(".diff", ""))
+  }
+  override def toString: String = {
+    groupId + ":" + artifactId + ":" + oldVersion + "_" + newVersion + (if (classifier.isEmpty) "" else (":" + classifier.get)) + ":" +
+      packaging
   }
 }

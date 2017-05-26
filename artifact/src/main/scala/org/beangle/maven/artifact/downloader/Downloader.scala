@@ -21,7 +21,7 @@ package org.beangle.maven.artifact.downloader
 import java.util.concurrent.atomic.AtomicLong
 
 object Downloader {
-  class Status(val total: Long) {
+  class Status(var total: Long) {
     val count = new AtomicLong(0)
   }
 }
