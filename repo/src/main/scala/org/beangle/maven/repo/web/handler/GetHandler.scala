@@ -16,24 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web.handler
+package org.beangle.maven.repo.web.handler
 
-import java.io.FileInputStream
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.annotation.spi
-import org.beangle.maven.mirror.service.Mirror
-import org.beangle.webmvc.execution.Handler
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-import java.io.IOException
-import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.time.Stopwatch
-import org.beangle.commons.web.io.RangedWagon
-import java.io.File
-import org.beangle.commons.activation.MimeTypeProvider
-import org.beangle.webmvc.api.util.CacheControl
+import java.io.{ File, FileInputStream }
 import java.text.SimpleDateFormat
 import java.util.Arrays
+
+import org.beangle.commons.activation.MimeTypeProvider
+import org.beangle.commons.lang.Strings
+import org.beangle.commons.web.io.RangedWagon
 import org.beangle.commons.web.util.RequestUtils
+import org.beangle.webmvc.api.util.CacheControl
+import org.beangle.webmvc.execution.Handler
+
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import org.beangle.maven.repo.service.RepoService
+import org.beangle.maven.artifact.Repo
+
 /**
  * @author chaostone
  */
@@ -41,26 +40,41 @@ class GetHandler extends Handler {
   val wagon = new RangedWagon
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     val filePath = RequestUtils.getServletPath(request)
-
+    val repos = RepoService.repos
+    val local = repos.local
     if (filePath.endsWith("/")) {
-      val localFile = Mirror.local(filePath)
+      val localFile = local.file(filePath)
       if (localFile.exists) listDir(filePath, localFile, request, response) else response.setStatus(HttpServletResponse.SC_NOT_FOUND)
     } else {
-      if (Mirror.exists(filePath)) {
-        val localFile = Mirror.local(filePath)
-        if (localFile.isDirectory) {
-          listDir(filePath, localFile, request, response)
-        } else {
-          val file = Mirror.get(filePath)
-          val ext = Strings.substringAfterLast(filePath, ".")
-          if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
-          if (!filePath.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
-          wagon.copy(new FileInputStream(file), request, response)
-        }
+      val localFile = local.file(filePath)
+      if (localFile.exists) {
+        if (localFile.isDirectory) listDir(filePath, localFile, request, response)
+        else transfer(localFile, request, response)
       } else {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+        if (filePath.endsWith(".diff")) {
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+        } else {
+          repos.find(filePath) match {
+            case Some(repo) =>
+              if (repos.cacheable) {
+                transfer(repos.download(filePath, repo), request, response)
+              } else {
+                response.sendRedirect(repo.base + filePath)
+              }
+            case None =>
+              response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+          }
+        }
       }
     }
+  }
+
+  private def transfer(file: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
+    val fileName = file.getName
+    val ext = Strings.substringAfterLast(fileName, ".")
+    if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
+    if (!fileName.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
+    wagon.copy(new FileInputStream(file), request, response)
   }
 
   private def listDir(uri: String, dir: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
@@ -69,7 +83,11 @@ class GetHandler extends Handler {
     val writer = response.getWriter
     writer.write(s"<!DOCTYPE html><head><title>Index of $uri</title></head><body>")
     writer.write(s"<h1>Index of $uri</h1><hr/><pre>")
-    if (uri != "/") writer.write("<a href=\"../\">../</a>\n")
+    //uri != "/" && uri != ""
+    if (uri.length > 1) {
+      if (uri.endsWith("/")) writer.write("<a href=\"../\">../</a>\n")
+      else writer.write("<a href=\"./\">../</a>\n")
+    }
     val buffer = new StringBuilder(200)
     val items = dir.list()
     var prefix = ""

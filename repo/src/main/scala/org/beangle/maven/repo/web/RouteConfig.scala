@@ -16,16 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web
+package org.beangle.maven.repo.web
 
-import org.beangle.commons.cdi.bind.AbstractBindModule
+import org.beangle.webmvc.dispatch.{ Route, RouteProvider }
+import org.beangle.commons.http.HttpMethods._
+import org.beangle.maven.repo.web.handler.GetHandler
+import org.beangle.maven.repo.web.handler.HeadHandler
+import org.beangle.maven.repo.web.handler.AboutHandler
 
 /**
  * @author chaostone
  */
-object DefaultModule extends AbstractBindModule {
+class RouteConfig extends RouteProvider {
 
-  protected override def binding(): Unit = {
-    bind(classOf[RouteConfig])
+  def routes: Iterable[Route] = {
+    List(new Route(GET, "/{path*}", new GetHandler),
+      new Route(HEAD, "/{path*}", new HeadHandler),
+      new Route(GET, "/about", new AboutHandler))
   }
 }

@@ -30,15 +30,15 @@ import org.beangle.commons.lang.Strings
 
 object Hibernates {
 
-  private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]()
+  private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
 
-  val HibernateVersion = "4.3.1.Final"
+  val HibernateVersion = "5.2.10.Final"
 
-  val CommonsVersion = "4.6.2"
+  val CommonsVersion = "5.0.0.M1"
 
-  val DataVersion = "4.4.3"
+  val DataVersion = "5.0.0.M1"
 
-  add("org.scala", "scala-library", "2.12.1")
+  add("org.scala", "scala-library", "2.12.2")
 
   add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
 
@@ -50,31 +50,25 @@ object Hibernates {
 
   add("org.hibernate", "hibernate-core", HibernateVersion)
 
-  add("org.jboss.logging", "jboss-logging", "3.1.3.GA")
-
-  add("org.jboss.logging", "jboss-logging-annotations", "1.2.0.Beta1")
-
-  add("javax.transaction", "jta", "1.1")
-
-  add("org.jboss.spec.javax.transaction", "jboss-transaction-api_1.2_spec", "1.0.0.Final")
-
-  add("dom4j", "dom4j", "1.6.1")
-
-  add("xml-apis", "xml-apis", "1.0.b2")
-
-  add("org.hibernate.common", "hibernate-commons-annotations", "4.0.4.Final")
+  add("org.hibernate.common", "hibernate-commons-annotations", "5.0.1.Final")
 
   add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
+
+  add("org.jboss.logging", "jboss-logging", "3.3.0.Final")
+
+  add("org.jboss", "jandex", "2.0.3.Final")
+
+  add("org.jboss.spec.javax.transaction", "jboss-transaction-api_1.2_spec", "1.0.1.Final")
+
+  add("dom4j", "dom4j", "1.6.1")
 
   add("org.javassist", "javassist", "3.20.0-GA")
 
   add("antlr", "antlr", "2.7.7")
 
-  add("org.jboss", "jandex", "1.1.0.Final")
+  //add("org.hibernate", "hibernate-validator", "5.0.2.Final")
 
-  add("org.hibernate", "hibernate-validator", "5.0.2.Final")
-
-  add("com.fasterxml", "classmate", "1.0.0")
+  add("com.fasterxml", "classmate", "1.3.0")
 
   def classpath(project: MavenProject, localRepository: String): String = {
     val classPath = new StringBuilder(project.getBuild.getOutputDirectory)

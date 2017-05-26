@@ -16,23 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.mirror.web
+package org.beangle.maven.repo.web
 
-import java.util.EnumSet
-import org.beangle.webmvc.dispatch.Dispatcher
-import javax.servlet.{ DispatcherType, ServletContext }
-import org.beangle.commons.cdi.spring.web.ContextListener
+import org.beangle.commons.cdi.bind.AbstractBindModule
 
-class Initializer extends org.beangle.commons.web.init.Initializer {
+/**
+ * @author chaostone
+ */
+object DefaultModule extends AbstractBindModule {
 
-  override def onStartup(sc: ServletContext) {
-    sc.setInitParameter("templatePath", "class://")
-
-    val ctxListener = new ContextListener
-    ctxListener.childContextConfigLocation = "WebApplicationContext:Action@classpath:spring-web-context.xml"
-    val container = ctxListener.loadContainer()
-    addListener(ctxListener)
-
-    sc.addServlet("Action", new Dispatcher(container)).addMapping("/*")
+  protected override def binding(): Unit = {
+    bind(classOf[RouteConfig])
   }
 }

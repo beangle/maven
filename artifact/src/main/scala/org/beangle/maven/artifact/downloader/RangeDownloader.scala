@@ -31,14 +31,24 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
 
   var executor: ExecutorService = Executors.newFixedThreadPool(threads)
 
-  protected override def downloading() {
-    val resourceURL = new URL(url)
-    val conn = resourceURL.openConnection()
-    val startAt = System.currentTimeMillis()
-    this.status = new Downloader.Status(conn.getContentLengthLong)
-    if (this.status.total <= 0 || this.status.total > java.lang.Integer.MAX_VALUE) {
+  protected override def downloading(resource: URL) {
+    println("Downloading " + resource)
+    val urlStatus = access(resource)
+    if (null == urlStatus.conn) {
+      println("\r" + httpCodeString(urlStatus.status) + " " + resource)
+      return
+    }
+    if (urlStatus.length < 0) {
+      super.defaultDownloading(urlStatus.conn)
+      return
+    }
+    val newUrl = urlStatus.conn.getURL
+    this.status = new Downloader.Status(urlStatus.length)
+    if (this.status.total > java.lang.Integer.MAX_VALUE) {
       throw new RuntimeException(s"Cannot download ${url} with size ${this.status.total}")
     }
+
+    val conn = urlStatus.conn
     val total = this.status.total.toInt
     val totalbuffer = Array.ofDim[Byte](total)
     var begin = 0
@@ -47,8 +57,8 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
       val start = begin
       val end = if (((start + step - 1) >= total)) (total - 1) else (start + step - 1)
       tasks.add(new Callable[Integer]() {
-        def call(): java.lang.Integer = {
-          val connection = resourceURL.openConnection().asInstanceOf[HttpURLConnection]
+        def call(): Integer = {
+          val connection = newUrl.openConnection().asInstanceOf[HttpURLConnection]
           connection.setRequestProperty("RANGE", "bytes=" + start + "-" + end)
           val input = connection.getInputStream
           val buffer = Array.ofDim[Byte](1024)
@@ -61,7 +71,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
             n = input.read(buffer)
           }
           IOs.close(input)
-          return end
+          end
         }
       })
       begin += step
@@ -81,7 +91,7 @@ class RangeDownloader(name: String, url: String, location: String) extends Abstr
     } else {
       throw new RuntimeException("Download error")
     }
-    finish(System.currentTimeMillis() - startAt)
+    finish(conn.getURL, System.currentTimeMillis() - startAt)
   }
 
 }

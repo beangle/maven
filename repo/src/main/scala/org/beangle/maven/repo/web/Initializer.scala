@@ -16,23 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.artifact
+package org.beangle.maven.repo.web
 
-class RemoteRepository(baseUrl: String) {
+import java.util.EnumSet
+import org.beangle.webmvc.dispatch.Dispatcher
+import javax.servlet.{ DispatcherType, ServletContext }
+import org.beangle.commons.cdi.spring.web.ContextListener
 
-  val httpBase = if (!(baseUrl.startsWith("http://") || baseUrl.startsWith("https://"))) "http://" + baseUrl else baseUrl
+class Initializer extends org.beangle.commons.web.init.Initializer {
 
-  val base = if (httpBase.endsWith("/")) httpBase.substring(0, httpBase.length - 1) else httpBase
+  override def onStartup(sc: ServletContext) {
+    sc.setInitParameter("templatePath", "class://")
 
-  def this() {
-    this("http://central.maven.org/maven2")
-  }
+    val ctxListener = new ContextListener
+    ctxListener.childContextConfigLocation = "WebApplicationContext:Action@classpath:spring-web-context.xml"
+    val container = ctxListener.loadContainer()
+    addListener(ctxListener)
 
-  def url(artifact: Artifact): String = {
-    base + "/" + artifact.groupId.replace('.', '/') + "/" +
-      artifact.artifactId + "/" +
-      artifact.version + "/" +
-      artifact.artifactId + "-" +
-      artifact.version + ".jar"
+    sc.addServlet("Action", new Dispatcher(container)).addMapping("/*")
   }
 }

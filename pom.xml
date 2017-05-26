@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.beangle</groupId>
     <artifactId>beangle-scala</artifactId>
-    <version>24.0</version>
+    <version>24.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
   <artifactId>beangle-maven-parent</artifactId>
   <packaging>pom</packaging>
   <name>Beangle Maven Toolkit</name>
-  <version>0.2.8</version>
+  <version>0.3.0</version>
 
   <properties>
     <mvnVersion>3.3.3</mvnVersion>
@@ -25,7 +25,7 @@
   <modules>
     <module>plugin</module>
     <module>artifact</module>
-    <module>mirror</module>
+    <module>repo</module>
   </modules>
 
   <dependencies>

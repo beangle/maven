@@ -22,18 +22,37 @@ import java.net.URL
 import java.io.InputStreamReader
 import java.io.LineNumberReader
 import org.beangle.commons.collection.Collections
+import java.io.File
+import java.rmi.Remote
 
 trait DependencyResolver {
 
   def resolve(resource: URL): Iterable[Artifact]
 }
 
-object BeangleDependencyResolver {
+object BeangleResolver {
 
   val DependenciesFile = "META-INF/beangle/container.dependencies"
+
+  def main(args: Array[String]): Unit = {
+    if (args.length < 1) {
+      println("Usage:java org.beangle.maven.artifact.BeangleResolver dependency_file remote_url local_base")
+      return
+    }
+    val dependencyFile = new File(args(0))
+    var remote = Repo.Remote.AliyunURL
+    var local: String = null
+    if (args.length > 1) remote = args(1)
+    if (args.length > 2) local = args(2)
+    val resolver = new BeangleResolver()
+    val artifacts = resolver.resolve(dependencyFile.toURI().toURL())
+    val remoteRepo = new Repo.Remote("remote", remote, Layout.Maven2)
+    val localRepo = new Repo.Local(local)
+    new ArtifactDownloader(remoteRepo, localRepo).download(artifacts)
+  }
 }
 
-class BeangleDependencyResolver extends DependencyResolver {
+class BeangleResolver extends DependencyResolver {
 
   override def resolve(resource: URL): Iterable[Artifact] = {
     val artifacts = Collections.newBuffer[Artifact]

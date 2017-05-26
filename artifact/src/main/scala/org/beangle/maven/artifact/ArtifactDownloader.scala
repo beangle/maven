@@ -19,44 +19,105 @@
 package org.beangle.maven.artifact
 
 import java.io.IOException
-import java.util.Map
-import java.util.concurrent.{ ConcurrentHashMap, ExecutorService, Executors }
+import java.util.concurrent.{ ConcurrentHashMap, Executors }
 
 import scala.collection.JavaConverters.mapAsScalaMap
 
 import org.beangle.maven.artifact.downloader.{ Downloader, RangeDownloader }
+import org.beangle.maven.artifact.util.Delta
 
-class ArtifactDownloader(private val remote: RemoteRepository, private val local: LocalRepository) {
+/**
+ * ArtifactDownloader
+ * <p>
+ * Support Features
+ * <li>1. Display download processes
+ * <li>2. Multiple thread downloading
+ * <li>3. Detect resource status before downloading
+ * </p>
+ */
+object ArtifactDownloader {
+  def apply(remote: String, base: String = null): ArtifactDownloader = {
+    new ArtifactDownloader(Repo.remote(remote), Repo.local(base))
+  }
+}
+class ArtifactDownloader(private val remote: Repo.Remote, private val local: Repo.Local) {
 
-  private var statuses: Map[String, Downloader] = new ConcurrentHashMap[String, Downloader]()
+  private val statuses = new ConcurrentHashMap[String, Downloader]()
 
-  private var executor: ExecutorService = Executors.newFixedThreadPool(5)
+  private val executor = Executors.newFixedThreadPool(5)
 
-  def download(artifacts: Iterable[Artifact]) {
-    if (artifacts.size <= 0) return
-    var idx = 1
+  def download(artifacts: Iterable[Artifact]): Unit = {
+    val sha1s = new collection.mutable.ArrayBuffer[Artifact]
+    val diffs = new collection.mutable.ArrayBuffer[Diff]
+
     for (artifact <- artifacts) {
-      val id = idx
-      executor.execute(new Runnable() {
-        def run() {
-          val downloader = new RangeDownloader(id + "/" + artifacts.size, remote.url(artifact), local.path(artifact))
-          statuses.put(downloader.url, downloader)
-          try {
-            downloader.start()
-          } catch {
-            case e: IOException => e.printStackTrace()
-          } finally {
-            statuses.remove(downloader.url)
+      if (!local.file(artifact).exists) {
+        if (!artifact.packaging.endsWith("sha1")) {
+          val sha1 = artifact.sha1
+          if (!local.file(sha1).exists()) {
+            sha1s += sha1
           }
         }
-      })
-      idx += 1
+        local.lastest(artifact) foreach { lastest =>
+          diffs += Diff(lastest, artifact.version)
+        }
+      }
+    }
+    doDownload(sha1s);
+
+    // download diffs and patch them.
+    doDownload(diffs);
+    val newers = new collection.mutable.ArrayBuffer[Artifact]
+    for (diff <- diffs) {
+      val diffFile = local.file(diff)
+      if (diffFile.exists) {
+        println("Patching " + diff)
+        Delta.patch(local.url(diff.older), local.url(diff.newer), local.url(diff))
+        newers += diff.newer
+      }
+    }
+    // check it,last time.
+    for (artifact <- artifacts) {
+      if (!local.file(artifact).exists) {
+        newers += artifact
+      }
+    }
+    doDownload(newers);
+    // verify sha1 against newer artifacts.
+    for (artifact <- newers) {
+      local.verifySha1(artifact)
+    }
+    executor.shutdown()
+  }
+
+  private def doDownload(products: Iterable[Product]): Unit = {
+    if (products.size <= 0) return
+    var idx = 1
+    for (artifact <- products) {
+      if (!local.file(artifact).exists()) {
+        val id = idx
+        executor.execute(new Runnable() {
+          def run() {
+            val downloader = new RangeDownloader(id + "/" + products.size, remote.url(artifact), local.url(artifact))
+            statuses.put(downloader.url, downloader)
+            try {
+              downloader.start()
+            } catch {
+              case e: IOException => e.printStackTrace()
+            } finally {
+              statuses.remove(downloader.url)
+            }
+          }
+        })
+        idx += 1
+      }
     }
     sleep(500)
     var i = 0
+    val splash = Array('\\', '|', '/', '-')
+    val count = statuses.size
     while (!statuses.isEmpty && !executor.isTerminated) {
       sleep(500)
-      val splash = Array('\\', '|', '/', '-')
       print("\r")
       val sb = new StringBuilder()
       sb.append(splash(i % 4)).append("  ")
@@ -68,8 +129,7 @@ class ArtifactDownloader(private val remote: RemoteRepository, private val local
       i += 1
       print(sb.toString)
     }
-    executor.shutdown()
-    print("\n")
+    if (count > 0) print("\n")
   }
 
   private def sleep(millsecond: Int) {
