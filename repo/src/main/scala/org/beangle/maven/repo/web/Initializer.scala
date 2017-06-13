@@ -21,7 +21,7 @@ package org.beangle.maven.repo.web
 import java.util.EnumSet
 import org.beangle.webmvc.dispatch.Dispatcher
 import javax.servlet.{ DispatcherType, ServletContext }
-import org.beangle.commons.cdi.spring.web.ContextListener
+import org.beangle.cdi.spring.web.ContextListener
 
 class Initializer extends org.beangle.commons.web.init.Initializer {
 

@@ -18,7 +18,7 @@
  */
 package org.beangle.maven.repo.web
 
-import org.beangle.commons.cdi.bind.AbstractBindModule
+import org.beangle.cdi.bind.AbstractBindModule
 
 /**
  * @author chaostone
