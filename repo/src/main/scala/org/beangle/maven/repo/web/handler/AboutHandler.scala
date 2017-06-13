@@ -29,7 +29,7 @@ class AboutHandler extends Handler {
 
   def handle(request: HttpServletRequest, response: HttpServletResponse): Any = {
     response.setContentType("text/html")
-    IOs.copy(ClassLoaders.getResourceAsStream("about.html"), response.getOutputStream)
+    IOs.copy(ClassLoaders.getResourceAsStream("about.html").get, response.getOutputStream)
   }
 
 }
