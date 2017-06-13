@@ -24,6 +24,7 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{ Component, Mojo, Parameter, LifecyclePhase, ResolutionScope }
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
+import org.beangle.commons.lang.Strings
 
 /**
  * Generate ddl from hibernate mappings
@@ -37,7 +38,7 @@ class DdlMojo extends AbstractMojo {
   @Parameter(defaultValue = "${settings}", readonly = true)
   private var settings: Settings = _
 
-  @Parameter(property = "dialect", defaultValue = "PostgreSQL9")
+  @Parameter(property = "dialect", defaultValue = "PostgreSQL")
   private var dialect: String = _
 
   @Parameter(property = "locale", defaultValue = "zh_CN")
@@ -48,15 +49,17 @@ class DdlMojo extends AbstractMojo {
       getLog.info("Ddl generation supports jar/war projects,Skip pom projects.")
       return
     }
-    val dialectStr = dialect
+    var dialectStr = dialect
+    dialectStr = Strings.capitalize(dialectStr)
+    dialectStr = dialectStr.replace("sql", "SQL")
     val classPath = Hibernates.classpath(project, settings.getLocalRepository)
     val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()
     try {
       getLog.info("Using classpath:" + Hibernates.simplify(classPath))
       getLog.info("Hibernate DDl generating in " + folder.getCanonicalPath)
-      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.hibernate.tool.DdlGenerator",
-        "org.hibernate.dialect." + dialectStr + "Dialect", folder.getCanonicalPath, locale)
+      val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.orm.tool.DdlGenerator",
+        dialectStr, folder.getCanonicalPath, locale)
       getLog.debug(pb.command().toString)
       pb.redirectErrorStream(true)
       val pro = pb.start()

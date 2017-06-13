@@ -18,12 +18,12 @@
  */
 package org.beangle.maven.repo.web
 
-import org.beangle.commons.cdi.bind.AbstractBindModule
+import org.beangle.cdi.bind.BindModule
 
 /**
  * @author chaostone
  */
-object DefaultModule extends AbstractBindModule {
+object DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
     bind(classOf[RouteConfig])
