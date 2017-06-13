@@ -33,41 +33,26 @@ object Hibernates {
   private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
 
   val HibernateVersion = "5.2.10.Final"
-
-  val CommonsVersion = "5.0.0.M1"
-
-  val DataVersion = "5.0.0.M1"
+  val CommonsVersion = "5.0.0.M3"
+  val DataVersion = "5.0.0.M2"
 
   add("org.scala", "scala-library", "2.12.2")
-
+  add("org.scala", "scala-reflect", "2.12.2")
   add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
-
   add("org.beangle.commons", "beangle-commons-text_2.12", CommonsVersion)
-
-  add("org.beangle.commons", "beangle-commons-model_2.12", CommonsVersion)
-
+  add("org.beangle.data", "beangle-data-model_2.12", DataVersion)
+  add("org.beangle.data", "beangle-data-jdbc_2.12", DataVersion)
+  add("org.beangle.data", "beangle-data-orm_2.12", DataVersion)
   add("org.beangle.data", "beangle-data-hibernate_2.12", DataVersion)
-
   add("org.hibernate", "hibernate-core", HibernateVersion)
-
   add("org.hibernate.common", "hibernate-commons-annotations", "5.0.1.Final")
-
   add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
-
   add("org.jboss.logging", "jboss-logging", "3.3.0.Final")
-
   add("org.jboss", "jandex", "2.0.3.Final")
-
   add("org.jboss.spec.javax.transaction", "jboss-transaction-api_1.2_spec", "1.0.1.Final")
-
   add("dom4j", "dom4j", "1.6.1")
-
   add("org.javassist", "javassist", "3.20.0-GA")
-
   add("antlr", "antlr", "2.7.7")
-
-  //add("org.hibernate", "hibernate-validator", "5.0.2.Final")
-
   add("com.fasterxml", "classmate", "1.3.0")
 
   def classpath(project: MavenProject, localRepository: String): String = {
