@@ -26,8 +26,8 @@ import org.apache.maven.plugins.annotations.{ Component, Mojo, Parameter, Lifecy
 import org.apache.maven.project.MavenProject
 import scala.collection.JavaConverters
 
-@Mojo(name = "gen-dependency", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-class DependencyMojo extends AbstractMojo {
+@Mojo(name = "sas", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+class SasMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _

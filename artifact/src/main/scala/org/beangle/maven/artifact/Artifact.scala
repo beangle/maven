@@ -21,24 +21,37 @@ package org.beangle.maven.artifact
 trait Product
 
 object Artifact {
+  /**
+   * Resolve gav string
+   * net.sf.json-lib:json-lib:jar:jdk15:2.4
+   * net.sf.json-lib:json-lib:jar:jdk15:2.4
+   */
   def apply(gav: String): Artifact = {
     val infos = gav.split(":")
-    val classifierIdx = infos(2).indexOf('-')
-    var classifier: Option[String] = None
-    var version: String = ""
-    if (-1 == classifierIdx) {
-      classifier = None
-      version = infos(2)
+    if (infos.length == 4) {
+      val cOp = infos(2)
+      var classifier: Option[String] = None
+      var packaging = ""
+      if (cOp == "jar" || cOp == "war" || cOp == "pom") {
+        classifier = None
+        packaging = cOp
+      } else {
+        classifier = Some(cOp)
+        packaging = "jar"
+      }
+      val version = infos(infos.length - 1)
+
+      new Artifact(infos(0), infos(1), version, classifier, packaging)
+    } else if (infos.length == 5) {
+      new Artifact(infos(0), infos(1), infos(4), Some(infos(3)), infos(2))
     } else {
-      classifier = Some(infos(2).substring(classifierIdx + 1))
-      version = infos(2).substring(0, classifierIdx)
+      new Artifact(infos(0), infos(1), infos(2), None, "jar")
     }
-    val packaging = if (infos.length > 3) infos(3) else "jar"
-    new Artifact(infos(0), infos(1), version, classifier, packaging)
   }
 }
+
 case class Artifact(val groupId: String, val artifactId: String,
-                    val version: String, val classifier: Option[String] = None, val packaging: String = "jar")
+  val version: String, val classifier: Option[String] = None, val packaging: String = "jar")
     extends Product {
 
   def md5: Artifact = {
@@ -80,7 +93,7 @@ object Diff {
 }
 
 case class Diff(val groupId: String, val artifactId: String,
-                oldVersion: String, newVersion: String, val classifier: Option[String], packaging: String = "jar")
+  oldVersion: String, newVersion: String, val classifier: Option[String], packaging: String = "jar")
     extends Product {
 
   def older: Artifact = {
