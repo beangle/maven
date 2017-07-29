@@ -29,7 +29,7 @@ import org.beangle.commons.lang.Strings
 /**
  * Generate ddl from hibernate mappings
  */
-@Mojo(name = "hbm2ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DdlMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
@@ -52,12 +52,12 @@ class DdlMojo extends AbstractMojo {
     var dialectStr = dialect
     dialectStr = Strings.capitalize(dialectStr)
     dialectStr = dialectStr.replace("sql", "SQL")
-    val classPath = Hibernates.classpath(project, settings.getLocalRepository)
-    val folder = new File(project.getBuild.getOutputDirectory + "/../generated-resources/ddl/" + dialectStr.toLowerCase + "/")
+    val classPath = Orms.classpath(project, settings.getLocalRepository)
+    val folder = new File(project.getBuild.getOutputDirectory + "/../ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()
     try {
-      getLog.info("Using classpath:" + Hibernates.simplify(classPath))
-      getLog.info("Hibernate DDl generating in " + folder.getCanonicalPath)
+      getLog.info("Using classpath:" + Orms.simplify(classPath))
+      getLog.info("DDl generating in " + folder.getCanonicalPath)
       val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.orm.tool.DdlGenerator",
         dialectStr, folder.getCanonicalPath, locale)
       getLog.debug(pb.command().toString)
