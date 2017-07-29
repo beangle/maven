@@ -43,6 +43,7 @@ class ArtifactDownloaderTest extends FunSpec with Matchers {
       artifacts += Artifact("aopalliance", "aopalliance", "1.0")
       artifacts += Artifact("asm", "asm-commons", "3.3")
       artifacts += Artifact("xml-apis", "xml-apis", "1.4.01")
+      artifacts += Artifact("net.sf.json-lib:json-lib:jdk15:2.4")
       downloader.download(artifacts)
     }
   }
