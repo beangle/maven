@@ -19,7 +19,7 @@
 package org.beangle.maven.repo.web
 
 import org.beangle.webmvc.dispatch.{ Route, RouteProvider }
-import org.beangle.commons.http.HttpMethods._
+import org.beangle.commons.net.http.HttpMethods._
 import org.beangle.maven.repo.web.handler.GetHandler
 import org.beangle.maven.repo.web.handler.HeadHandler
 import org.beangle.maven.repo.web.handler.AboutHandler
