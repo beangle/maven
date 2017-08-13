@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.3.3-SNAPSHOT</version>
+    <version>0.3.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -14,7 +14,6 @@
   <properties>
     <bundle.symbolicName>org.beangle.maven.repo</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.repo</bundle.namespace>
-    <beangle.cdi.version>0.0.10</beangle.cdi.version>
   </properties>
 
   <description>
@@ -63,7 +62,7 @@
       <plugin>
         <groupId>org.beangle.maven</groupId>
         <artifactId>beangle-maven-plugin</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.2</version>
         <configuration>
           <dependencyIncludes>*:*</dependencyIncludes>
         </configuration>
@@ -72,7 +71,7 @@
             <id>generate</id>
             <phase>prepare-package</phase>
             <goals>
-              <goal>gen-dependency</goal>
+              <goal>sas</goal>
             </goals>
           </execution>
         </executions>
