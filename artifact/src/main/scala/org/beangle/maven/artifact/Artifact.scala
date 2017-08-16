@@ -21,6 +21,7 @@ package org.beangle.maven.artifact
 trait Product
 
 object Artifact {
+  val packagings = Set("jar", "war", "pom", "zip", "ear", "rar", "ejb", "ejb3")
   /**
    * Resolve gav string
    * net.sf.json-lib:json-lib:jar:jdk15:2.4
@@ -32,7 +33,7 @@ object Artifact {
       val cOp = infos(2)
       var classifier: Option[String] = None
       var packaging = ""
-      if (cOp == "jar" || cOp == "war" || cOp == "pom") {
+      if (packagings.contains(cOp)) {
         classifier = None
         packaging = cOp
       } else {
