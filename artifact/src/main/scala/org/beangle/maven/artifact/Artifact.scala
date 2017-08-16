@@ -21,7 +21,7 @@ package org.beangle.maven.artifact
 trait Product
 
 object Artifact {
-  val packagings = Set("jar", "war", "pom", "zip", "ear", "rar", "ejb", "ejb3")
+  val packagings = Set("jar", "war", "pom", "zip", "ear", "rar", "ejb", "ejb3", "tar", "tar.gz")
   /**
    * Resolve gav string
    * net.sf.json-lib:json-lib:jar:jdk15:2.4
