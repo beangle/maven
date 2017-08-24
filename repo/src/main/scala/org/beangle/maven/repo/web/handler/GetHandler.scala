@@ -22,7 +22,7 @@ import java.io.{ File, FileInputStream }
 import java.text.SimpleDateFormat
 import java.util.Arrays
 
-import org.beangle.commons.activation.MimeTypeProvider
+import org.beangle.commons.activation.MimeTypes
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.web.io.RangedWagon
 import org.beangle.commons.web.util.RequestUtils
@@ -72,7 +72,7 @@ class GetHandler extends Handler {
   private def transfer(file: File, request: HttpServletRequest, response: HttpServletResponse): Unit = {
     val fileName = file.getName
     val ext = Strings.substringAfterLast(fileName, ".")
-    if (Strings.isNotEmpty(ext)) MimeTypeProvider.getMimeType(ext) foreach (m => response.setContentType(m.toString))
+    if (Strings.isNotEmpty(ext)) MimeTypes.getMimeType(ext) foreach (m => response.setContentType(m.toString))
     if (!fileName.contains("SNAPSHOT")) CacheControl.expiresAfter(10, response)
     wagon.copy(new FileInputStream(file), request, response)
   }
