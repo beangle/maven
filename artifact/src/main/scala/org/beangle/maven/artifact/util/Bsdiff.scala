@@ -4,7 +4,6 @@ import java.io.{ BufferedInputStream, BufferedOutputStream, ByteArrayInputStream
 
 import org.apache.commons.compress.compressors.CompressorStreamFactory
 import org.beangle.maven.artifact.util.bsdiff.{ Format, Offset, SuffixSort }
-import io.sigpipe.jbsdiff.Diff
 
 /**
  * This module provides functionality for generating bsdiff patches from two
