@@ -19,4 +19,12 @@
   <description>
     Beangle Maven Artifact
   </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.5</version>
+        </dependency>
+    </dependencies>
 </project>
