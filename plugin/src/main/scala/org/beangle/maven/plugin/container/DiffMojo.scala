@@ -30,7 +30,7 @@ class DiffMojo extends AbstractMojo {
     var format = System.getProperty("VersionRange")
     var start, end = ""
     if (null == format) {
-      start = Consoles.prompt("Input version range starts with:\n", null,
+      start = Consoles.prompt("Input version range starts with:", null,
         (_ != project.getVersion))
       end = project.getVersion
     } else {
