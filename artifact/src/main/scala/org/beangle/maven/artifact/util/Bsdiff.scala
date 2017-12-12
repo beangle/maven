@@ -4,11 +4,12 @@ import java.io.{ BufferedInputStream, BufferedOutputStream, ByteArrayInputStream
 
 import org.apache.commons.compress.compressors.CompressorStreamFactory
 import org.beangle.maven.artifact.util.bsdiff.{ Format, Offset, SuffixSort }
+import org.beangle.commons.io.Files
 
 /**
  * This module provides functionality for generating bsdiff patches from two
  * source files (an old and new file).
- * 
+ *
  * The algorithm based on bsdiff(http://www.daemonology.net/bsdiff/)
  * and transform from https://github.com/malensek/jbsdiff
  */
@@ -25,6 +26,7 @@ object Bsdiff {
     newIn.read(newBytes)
     newIn.close()
 
+    Files.touch(patchFile)
     val out = new FileOutputStream(patchFile)
     diff(oldBytes, newBytes, out)
     out.close()

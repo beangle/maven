@@ -50,6 +50,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.beangle.maven</groupId>
+      <artifactId>beangle-maven-artifact_2.12</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>3.3</version>

@@ -19,21 +19,30 @@
 package org.beangle.maven.plugin.util
 
 import org.apache.maven.artifact.Artifact
+import java.io.File
 
 object Projects {
 
-  def getPath(artifact: Artifact, localRepository: String): String = {
+  def getPath(groupId: String, artifactId: String, version: String, packaging: String, localRepository: String): String = {
     val path = new StringBuilder()
-    path.append(localRepository).append("/").append(artifact.getGroupId.replaceAll("\\.", "/"))
+    path.append(localRepository).append("/").append(groupId.replaceAll("\\.", "/"))
       .append("/")
-      .append(artifact.getArtifactId)
+      .append(artifactId)
       .append("/")
-      .append(artifact.getVersion)
+      .append(version)
       .append("/")
-      .append(artifact.getArtifactId)
+      .append(artifactId)
       .append("-")
-      .append(artifact.getVersion)
-      .append(".jar")
+      .append(version)
+      .append(".").append(packaging)
     path.toString
+  }
+
+  def getFile(groupId: String, artifactId: String, version: String, packaging: String, localRepository: String): File = {
+    new File(getPath(groupId, artifactId, version, packaging, localRepository))
+  }
+
+  def getPath(artifact: Artifact, localRepository: String): String = {
+    getPath(artifact.getGroupId, artifact.getArtifactId, artifact.getVersion, artifact.getType, localRepository)
   }
 }
