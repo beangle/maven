@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.beangle.maven</groupId>
     <artifactId>beangle-maven-parent</artifactId>
-    <version>0.3.5</version>
+    <version>0.3.6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
@@ -48,6 +48,11 @@
       <artifactId>scala-reflect</artifactId>
       <version>${scala.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.beangle.maven</groupId>
+      <artifactId>beangle-maven-artifact_2.12</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>

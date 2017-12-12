@@ -3,18 +3,18 @@
   <parent>
     <groupId>org.beangle</groupId>
     <artifactId>beangle-scala</artifactId>
-    <version>24.2</version>
+    <version>24.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
   <artifactId>beangle-maven-parent</artifactId>
   <packaging>pom</packaging>
   <name>Beangle Maven Toolkit</name>
-  <version>0.3.5</version>
+  <version>0.3.6</version>
 
   <properties>
     <mvnVersion>3.3.3</mvnVersion>
-    <beangle.commons.version>5.0.0.M6</beangle.commons.version>
+    <beangle.commons.version>5.0.0</beangle.commons.version>
     <beangle.mvc.version>0.3.14</beangle.mvc.version>
     <beangle.cdi.version>0.0.13</beangle.cdi.version>
   </properties>
