@@ -12,6 +12,8 @@ import org.beangle.maven.artifact.util.Bsdiff
 import org.beangle.maven.artifact.Diff
 import org.beangle.maven.artifact.Artifact
 import org.beangle.maven.artifact.Layout
+import org.beangle.commons.io.Files
+import org.beangle.commons.lang.time.Stopwatch
 
 @Mojo(name = "diff", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DiffMojo extends AbstractMojo {
@@ -63,8 +65,10 @@ class DiffMojo extends AbstractMojo {
 
     val diffFile = new File(settings.getLocalRepository + "/" + Layout.Maven2.path(diff))
     println(s"Generating diff file ${diffFile.getPath}")
+    val watch = new Stopwatch(true)
     Bsdiff.diff(file1, file2, diffFile)
-
+    Files.copy(diffFile, new File(project.getBuild.getDirectory + "/" + diffFile.getName))
+    println(s"Generated ${diffFile.getName}(${diffFile.length/1000.0}KB) using $watch")
   }
 
 }
