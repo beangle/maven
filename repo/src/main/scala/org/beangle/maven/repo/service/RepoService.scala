@@ -27,7 +27,7 @@ object RepoService {
 
   private def init() {
     val mirrors = Collections.newBuffer[Repo.Mirror]
-    var cacheable = true
+    var cacheable = false
 
     val local = SystemInfo.user.home + "/.m2/repository"
 
