@@ -18,16 +18,13 @@
  */
 package org.beangle.maven.artifact
 
-import java.io.File
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import org.beangle.maven.artifact.util.Delta
-import org.beangle.commons.io.IOs
-import java.io.FileReader
-import java.io.FileInputStream
-import org.beangle.commons.lang.Charsets
+import java.io.{ File, FileInputStream }
+import java.net.{ HttpURLConnection, URL }
+
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.io.IOs
+import org.beangle.commons.lang.Charsets
+import org.beangle.maven.artifact.util.Delta
 
 object Repo {
 
@@ -49,7 +46,7 @@ object Repo {
     def url(p: Product): String = {
       p match {
         case a: Artifact => base + layout.path(a)
-        case d: Diff     => base + layout.path(d)
+        case d: Diff => base + layout.path(d)
       }
     }
   }
@@ -90,27 +87,36 @@ object Repo {
       }
     }
 
+    def lastestBefore(artifact: Artifact): Option[Artifact] = {
+      lastest(artifact, true)
+    }
+
     def lastest(artifact: Artifact): Option[Artifact] = {
+      lastest(artifact, false)
+    }
+
+    def lastest(artifact: Artifact, isLessThen: Boolean): Option[Artifact] = {
       val parent = new File(url(artifact)).getParentFile().getParentFile()
       if (parent.exists()) {
         val siblings = parent.list().toList
         val versions = Collections.newBuffer[String]
         for (sibling <- siblings) {
           if (!sibling.contains("SNAPSHOT")
-            && new File(parent.getAbsolutePath() + File.separator + sibling).isDirectory()) {
-            if (sibling.compareTo(artifact.version) < 0) {
+            && new File(parent.getAbsolutePath + File.separator + sibling).isDirectory) {
+            if (isLessThen) {
+              if (sibling.compareTo(artifact.version) < 0) versions += sibling
+            } else {
               versions += sibling
             }
           }
         }
-        versions.sorted
-        if (versions.isEmpty) None
-        else Some(artifact.forVersion(versions(versions.size - 1)))
+        val rs = versions.sorted
+        if (rs.isEmpty) None
+        else Some(artifact.forVersion(rs(rs.size - 1)))
       } else {
         None
       }
     }
-
   }
 
   object Remote {
@@ -142,7 +148,7 @@ object Repo {
     override def equals(any: Any): Boolean = {
       any match {
         case r: Remote => r.id.equals(this.id)
-        case _         => false
+        case _ => false
       }
     }
     override def toString: String = {
@@ -151,7 +157,7 @@ object Repo {
   }
 
   class Mirror(id: String, base: String, val pattern: String = "*",
-               layout: Layout = Layout.Maven2) extends Remote(id, base, layout) {
+    layout: Layout = Layout.Maven2) extends Remote(id, base, layout) {
     def matches(filePath: String): Boolean = {
       (pattern == "*" || filePath.startsWith(pattern))
     }
