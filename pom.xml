@@ -15,8 +15,8 @@
   <properties>
     <mvnVersion>3.3.3</mvnVersion>
     <beangle.commons.version>5.0.0</beangle.commons.version>
-    <beangle.mvc.version>0.3.14</beangle.mvc.version>
-    <beangle.cdi.version>0.0.13</beangle.cdi.version>
+    <beangle.mvc.version>0.3.15</beangle.mvc.version>
+    <beangle.cdi.version>0.0.14</beangle.cdi.version>
   </properties>
 
   <description>
