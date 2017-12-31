@@ -18,17 +18,16 @@
  */
 package org.beangle.maven.artifact.util
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.{ BufferedReader, File, InputStreamReader }
 
 object Delta {
 
   def diff(oldFile: String, newFile: String, diffFile: String): Unit = {
-    exec("bsdiff", oldFile, newFile, diffFile)
+    Bsdiff.diff(new File(oldFile), new File(newFile), new File(diffFile))
   }
 
-  def patch(oldFile: String, newFile: String, diffFile: String): Unit = {
-    exec("bspatch", oldFile, newFile, diffFile)
+  def patch(oldFile: String, newFile: String, patchFile: String): Unit = {
+    Bsdiff.patch(new File(oldFile), new File(newFile), new File(patchFile))
   }
 
   def sha1(fileLoc: String): String = {

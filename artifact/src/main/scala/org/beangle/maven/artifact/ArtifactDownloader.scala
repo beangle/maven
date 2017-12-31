@@ -58,7 +58,7 @@ class ArtifactDownloader(private val remote: Repo.Remote, private val local: Rep
             sha1s += sha1
           }
         }
-        local.lastest(artifact) foreach { lastest =>
+        local.lastestBefore(artifact) foreach { lastest =>
           diffs += Diff(lastest, artifact.version)
         }
       }
