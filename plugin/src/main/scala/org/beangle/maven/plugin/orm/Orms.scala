@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.plugin.hibernate
+package org.beangle.maven.plugin.orm
 
 import java.io.File
 import java.util.HashMap
@@ -31,11 +31,11 @@ import org.beangle.commons.lang.Strings
 object Orms {
 
   private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
-  val CommonsVersion = "5.0.0.M6"
-  val DataVersion = "5.0.0.M6"
-
-  add("org.scala", "scala-library", "2.12.3")
-  add("org.scala", "scala-reflect", "2.12.3")
+  val CommonsVersion = "5.0.0"
+  val DataVersion = "5.0.1"
+  val ScalaVersion = "2.12.4"
+  add("org.scala", "scala-library", ScalaVersion)
+  add("org.scala", "scala-reflect", ScalaVersion)
   add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
   add("org.beangle.commons", "beangle-commons-text_2.12", CommonsVersion)
   add("org.beangle.data", "beangle-data-model_2.12", DataVersion)

@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Beangle.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.maven.plugin.hibernate
-
+package org.beangle.maven.plugin.orm
 import java.io.{ BufferedReader, File, InputStreamReader }
 
 import org.apache.maven.plugin.AbstractMojo
@@ -27,7 +26,7 @@ import org.apache.maven.settings.Settings
 import org.beangle.commons.lang.Strings
 
 /**
- * Generate ddl from hibernate mappings
+ * Generate ddl from orm mappings
  */
 @Mojo(name = "ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DdlMojo extends AbstractMojo {
