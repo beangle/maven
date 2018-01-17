@@ -25,11 +25,12 @@ import org.apache.maven.plugins.annotations.{ Mojo, Parameter, LifecyclePhase, R
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
 import org.beangle.commons.io.Files
+import org.beangle.commons.file.diff.Bsdiff
 import org.beangle.commons.lang.{ Consoles, Strings }
 import org.beangle.commons.lang.time.Stopwatch
-import org.beangle.maven.artifact.{ Artifact, Diff, Layout }
-import org.beangle.maven.artifact.util.Bsdiff
+import org.beangle.repo.artifact.{ Artifact, Diff, Layout }
 import org.beangle.maven.plugin.util.Projects
+import org.beangle.repo.artifact.Repo
 
 @Mojo(name = "diff", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DiffMojo extends AbstractMojo {
@@ -41,15 +42,21 @@ class DiffMojo extends AbstractMojo {
   private var settings: Settings = _
 
   def execute(): Unit = {
-    if (project.getPackaging != "war") {
-      getLog.info("Diff Generation supports only war project!")
+    val packaging = project.getPackaging
+    if (packaging != "war" && packaging != "jar") {
+      getLog.info("Diff Generation supports only war/jar projects!")
       return
     }
+
+    val localRepo = Repo.local(settings.getLocalRepository)
+    val thisArtifact = Artifact(project.getGroupId, project.getArtifactId, project.getVersion, None, packaging)
     var format = System.getProperty("VersionRange")
     var start, end = ""
     if (null == format) {
-      start = Consoles.prompt("Input version range starts with:", null,
-        (_ != project.getVersion))
+      localRepo.lastestBefore(thisArtifact) match {
+        case Some(old) => start = old.version
+        case None      => start = Consoles.prompt("Input version range starts with:", null, (_ != project.getVersion))
+      }
       end = project.getVersion
     } else {
       val rs = Strings.split(format, "_")
@@ -63,12 +70,12 @@ class DiffMojo extends AbstractMojo {
     }
 
     val file1 =
-      Projects.getFile(project.getGroupId, project.getArtifactId, start, "war", settings.getLocalRepository)
+      Projects.getFile(project.getGroupId, project.getArtifactId, start, packaging, settings.getLocalRepository)
 
     val file2 =
-      Projects.getFile(project.getGroupId, project.getArtifactId, end, "war", settings.getLocalRepository)
+      Projects.getFile(project.getGroupId, project.getArtifactId, end, packaging, settings.getLocalRepository)
 
-    val diff = Diff(Artifact(project.getGroupId, project.getArtifactId, start, None, "war"), end)
+    val diff = Diff(Artifact(project.getGroupId, project.getArtifactId, start, None, project.getPackaging), end)
 
     if (!file1.exists) {
       println(s"Cannot find ${file1.getPath}")
