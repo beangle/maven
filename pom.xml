@@ -19,7 +19,7 @@
     <mvnVersion>3.3.3</mvnVersion>
   </properties>
 
-  <description>
+  <description>  
     Beangle Maven Plugin
   </description>
 
