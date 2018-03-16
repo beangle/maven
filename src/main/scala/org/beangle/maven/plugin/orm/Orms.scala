@@ -31,8 +31,8 @@ import org.beangle.commons.lang.Strings
 object Orms {
 
   private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
-  val CommonsVersion = "5.0.0"
-  val DataVersion = "5.0.1"
+  val CommonsVersion = "5.1.0.M2"
+  val DataVersion = "5.0.2"
   val ScalaVersion = "2.12.4"
   add("org.scala", "scala-library", ScalaVersion)
   add("org.scala", "scala-reflect", ScalaVersion)
