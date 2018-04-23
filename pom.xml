@@ -15,7 +15,7 @@
   <properties>
     <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.plugin</bundle.namespace>
-    <beangle.repo.version>0.0.2</beangle.repo.version>
+    <beangle.repo.version>0.0.3</beangle.repo.version>
     <mvnVersion>3.3.3</mvnVersion>
   </properties>
 
