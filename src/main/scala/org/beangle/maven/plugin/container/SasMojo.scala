@@ -81,7 +81,7 @@ class SasMojo extends AbstractMojo {
       val fw = new FileWriter(file)
       fw.write(sb.toString)
       fw.close()
-      getLog.info(s"Generated DEPENDENCIES:(${provideds.size})" + file.getAbsolutePath)
+      getLog.info(s"Generated dependencies:(${provideds.size})" + file.getAbsolutePath)
     } catch {
       case e: IOException => e.printStackTrace()
     }
