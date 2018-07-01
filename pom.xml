@@ -3,20 +3,20 @@
   <parent>
     <groupId>org.beangle</groupId>
     <artifactId>beangle-scala</artifactId>
-    <version>24.9</version>
+    <version>24.10</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
   <artifactId>beangle-maven-plugin</artifactId>
-  <version>0.3.11</version>
+  <version>0.3.12</version>
   <packaging>maven-plugin</packaging>
   <name>Beangle Maven Plugin</name>
 
   <properties>
     <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.plugin</bundle.namespace>
-    <beangle.repo.version>0.0.3</beangle.repo.version>
-    <mvnVersion>3.5.0</mvnVersion>
+    <beangle.repo.version>0.0.4</beangle.repo.version>
+    <mvnVersion>3.5.3</mvnVersion>
   </properties>
 
   <description>
@@ -70,7 +70,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.4</version>
+        <version>3.5.2</version>
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
