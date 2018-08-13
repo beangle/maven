@@ -32,7 +32,7 @@ object Orms {
 
   private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
   val CommonsVersion = "5.1.0"
-  val DataVersion = "5.0.4"
+  val DataVersion = "5.0.5"
   val ScalaVersion = "2.12.6"
   add("org.scala", "scala-library", ScalaVersion)
   add("org.scala", "scala-reflect", ScalaVersion)
