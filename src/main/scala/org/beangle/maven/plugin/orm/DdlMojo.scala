@@ -70,6 +70,7 @@ class DdlMojo extends AbstractMojo {
         line = reader.readLine()
       }
       reader.close()
+      getLog.info("DDl generated in " + folder.getCanonicalPath)
     } catch {
       case e: Exception => e.printStackTrace()
     }
