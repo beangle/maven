@@ -55,7 +55,7 @@ class DdlMojo extends AbstractMojo {
     val folder = new File(project.getBuild.getOutputDirectory + "/../ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()
     try {
-      getLog.info("Using classpath:" + Orms.simplify(classPath))
+      getLog.debug("Using classpath:" + Orms.simplify(classPath))
       getLog.info("DDl generating in " + folder.getCanonicalPath)
       val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.orm.tool.DdlGenerator",
         dialectStr, folder.getCanonicalPath, locale)
