@@ -41,6 +41,9 @@ class SasMojo extends AbstractMojo {
   private val fileName = "container.dependencies"
 
   def execute(): Unit = {
+    if ("true" == System.getProperty("skipSas")) {
+      return
+    }
     if (project.getPackaging != "war") {
       getLog.info("Container Dependency Generation supports only war project!")
       return
