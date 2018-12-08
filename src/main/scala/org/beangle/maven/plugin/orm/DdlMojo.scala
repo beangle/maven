@@ -60,16 +60,9 @@ class DdlMojo extends AbstractMojo {
       val pb = new ProcessBuilder("java", "-cp", classPath.toString, "org.beangle.data.orm.tool.DdlGenerator",
         dialectStr, folder.getCanonicalPath, locale)
       getLog.debug(pb.command().toString)
-      pb.redirectErrorStream(true)
+      pb.inheritIO()
       val pro = pb.start()
       pro.waitFor()
-      val reader = new BufferedReader(new InputStreamReader(pro.getInputStream))
-      var line: String = reader.readLine()
-      while (line != null) {
-        getLog.info(line)
-        line = reader.readLine()
-      }
-      reader.close()
       getLog.info("DDl generated in " + folder.getCanonicalPath)
     } catch {
       case e: Exception => e.printStackTrace()
