@@ -18,13 +18,13 @@
  */
 package org.beangle.maven.plugin.container
 
-import java.io.{ File, FileWriter, IOException }
+import java.io.{File, FileWriter, IOException}
 
-import org.apache.maven.artifact.Artifact
 import org.apache.maven.plugin.AbstractMojo
-import org.apache.maven.plugins.annotations.{ Component, Mojo, Parameter, LifecyclePhase, ResolutionScope }
+import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
-import scala.collection.JavaConverters
+
+import scala.jdk.javaapi.CollectionConverters.asScala
 
 @Mojo(name = "sas", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class SasMojo extends AbstractMojo {
@@ -58,12 +58,12 @@ class SasMojo extends AbstractMojo {
       val excludes = convert(dependencyExcludes)
       val includes = convert(dependencyIncludes)
 
-      JavaConverters.collectionAsScalaIterable(project.getArtifacts) foreach { artifact =>
+      asScala(project.getArtifacts) foreach { artifact =>
         val groupId = artifact.getGroupId
         val str = artifact.toString
         val scope = artifact.getScope
         val curr = new Dependency(groupId, artifact.getArtifactId)
-        var scopeMatched = (scope == "provided")
+        var scopeMatched = scope == "provided"
         if (!scopeMatched && !artifact.getVersion.endsWith("SNAPSHOT")) {
           if (scope == "runtime" || scope == "compile") scopeMatched = true
         }
@@ -75,7 +75,9 @@ class SasMojo extends AbstractMojo {
             included &= (!excludes.exists(d => d.matches(curr)))
           }
         }
-        if (scopeMatched && included) provideds += (str.replace(":jar", "").replace(":" + scope, ""))
+        if (scopeMatched && included) {
+          provideds += str.replace(":jar", "").replace(":" + scope, "")
+        }
       }
       val sb = new StringBuilder()
       provideds.sorted foreach { one =>
