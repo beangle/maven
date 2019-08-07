@@ -21,16 +21,15 @@ package org.beangle.maven.plugin.container
 import java.io.File
 
 import org.apache.maven.plugin.AbstractMojo
-import org.apache.maven.plugins.annotations.{ Mojo, Parameter, LifecyclePhase, ResolutionScope }
+import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
-import org.beangle.commons.io.Files
 import org.beangle.commons.file.diff.Bsdiff
-import org.beangle.commons.lang.{ Consoles, Strings }
+import org.beangle.commons.io.Files
 import org.beangle.commons.lang.time.Stopwatch
-import org.beangle.repo.artifact.{ Artifact, Diff, Layout }
+import org.beangle.commons.lang.{Consoles, Strings}
 import org.beangle.maven.plugin.util.Projects
-import org.beangle.repo.artifact.Repo
+import org.beangle.repo.artifact.{Artifact, Diff, Layout, Repo}
 
 @Mojo(name = "diff", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DiffMojo extends AbstractMojo {
@@ -55,13 +54,13 @@ class DiffMojo extends AbstractMojo {
     if (null == format) {
       localRepo.lastestBefore(thisArtifact) match {
         case Some(old) => start = old.version
-        case None      => start = Consoles.prompt("Input version range starts with:", null, (_ != project.getVersion))
+        case None => start = Consoles.prompt("Input version range starts with:", null, (_ != project.getVersion))
       }
       end = project.getVersion
     } else {
       val rs = Strings.split(format, "_")
-      if (rs.size != 2) {
-        println("Version Range should be start_end");
+      if (rs.length != 2) {
+        println("Version Range should be start_end")
         System.exit(1)
       } else {
         start = rs(0)

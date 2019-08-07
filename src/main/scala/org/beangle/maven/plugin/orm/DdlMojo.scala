@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.beangle.maven.plugin.orm
-import java.io.{ BufferedReader, File, InputStreamReader }
+
+import java.io.File
 
 import org.apache.maven.plugin.AbstractMojo
-import org.apache.maven.plugins.annotations.{ Component, Mojo, Parameter, LifecyclePhase, ResolutionScope }
+import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
 import org.beangle.commons.lang.Strings
@@ -43,7 +44,7 @@ class DdlMojo extends AbstractMojo {
   @Parameter(property = "locale", defaultValue = "zh_CN")
   private var locale: String = _
 
-  override def execute() {
+  override def execute(): Unit = {
     if (project.getPackaging == "pom") {
       getLog.info("Ddl generation supports jar/war projects,Skip pom projects.")
       return

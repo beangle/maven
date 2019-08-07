@@ -19,28 +19,28 @@
 package org.beangle.maven.plugin.orm
 
 import java.io.File
-import java.util.HashMap
-import java.util.Map
-import org.apache.maven.artifact.Artifact
-import org.apache.maven.artifact.DefaultArtifact
+import java.{util => ju}
+
+import org.apache.maven.artifact.{Artifact, DefaultArtifact}
 import org.apache.maven.project.MavenProject
-import org.beangle.maven.plugin.util.Projects
-import scala.collection.JavaConverters.collectionAsScalaIterable
 import org.beangle.commons.lang.Strings
+import org.beangle.maven.plugin.util.Projects
+
+import scala.jdk.javaapi.CollectionConverters.asScala
 
 object Orms {
 
-  private var dependencies: Map[String, Artifact] = new HashMap[String, Artifact]
-  val CommonsVersion = "5.1.7"
-  val DataVersion = "5.1.7"
-  val ScalaVersion = "2.12.8"
+  private val dependencies: ju.Map[String, Artifact] = new ju.HashMap[String, Artifact]
+  val CommonsVersion = "5.1.8"
+  val DataVersion = "5.1.8"
+  val ScalaVersion = "2.13.0"
   add("org.scala", "scala-library", ScalaVersion)
   add("org.scala", "scala-reflect", ScalaVersion)
-  add("org.beangle.commons", "beangle-commons-core_2.12", CommonsVersion)
-  add("org.beangle.commons", "beangle-commons-text_2.12", CommonsVersion)
-  add("org.beangle.data", "beangle-data-model_2.12", DataVersion)
-  add("org.beangle.data", "beangle-data-jdbc_2.12", DataVersion)
-  add("org.beangle.data", "beangle-data-orm_2.12", DataVersion)
+  add("org.beangle.commons", "beangle-commons-core_2.13", CommonsVersion)
+  add("org.beangle.commons", "beangle-commons-text_2.13", CommonsVersion)
+  add("org.beangle.data", "beangle-data-model_2.13", DataVersion)
+  add("org.beangle.data", "beangle-data-jdbc_2.13", DataVersion)
+  add("org.beangle.data", "beangle-data-orm_2.13", DataVersion)
   add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
   add("org.javassist", "javassist", "3.20.0-GA")
   add("org.slf4j", "slf4j-api", "1.7.25")
@@ -49,12 +49,12 @@ object Orms {
 
   def classpath(project: MavenProject, localRepository: String): String = {
     val classPath = new StringBuilder(project.getBuild.getOutputDirectory)
-    val addon = new HashMap[String, Artifact](dependencies)
-    for (artifact <- collectionAsScalaIterable(project.getArtifacts)) {
+    val addon = new ju.HashMap[String, Artifact](dependencies)
+    for (artifact <- asScala(project.getArtifacts)) {
       addon.remove(artifact.getArtifactId)
       addToClassPath(classPath, localRepository, artifact)
     }
-    for (artifact <- collectionAsScalaIterable(addon.values)) {
+    for (artifact <- asScala(addon.values)) {
       addToClassPath(classPath, localRepository, artifact)
     }
     val logurl = Orms.getClass.getResource("/logback.xml")
@@ -71,12 +71,12 @@ object Orms {
     Strings.join(shorted, " ")
   }
 
-  private def addToClassPath(classPath: StringBuilder, localRepository: String, artifact: Artifact) {
+  private def addToClassPath(classPath: StringBuilder, localRepository: String, artifact: Artifact): Unit = {
     classPath.append(File.pathSeparator)
     classPath.append(Projects.getPath(artifact, localRepository))
   }
 
-  private def add(groupId: String, artifactId: String, version: String) {
+  private def add(groupId: String, artifactId: String, version: String): Unit = {
     val artifact = new DefaultArtifact(groupId, artifactId, version, "runtime", "jar", "", null)
     dependencies.put(artifactId, artifact)
   }
