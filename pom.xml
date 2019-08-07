@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
   <artifactId>beangle-maven-plugin</artifactId>
-  <version>0.3.18</version>
+  <version>0.3.19-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Beangle Maven Plugin</name>
 
