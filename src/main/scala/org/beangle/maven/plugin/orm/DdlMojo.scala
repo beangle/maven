@@ -52,6 +52,7 @@ class DdlMojo extends AbstractMojo {
     var dialectStr = dialect
     dialectStr = Strings.capitalize(dialectStr)
     dialectStr = dialectStr.replace("sql", "SQL")
+
     val classPath = Orms.classpath(project, settings.getLocalRepository)
     val folder = new File(project.getBuild.getOutputDirectory + "/../ddl/" + dialectStr.toLowerCase + "/")
     folder.mkdirs()

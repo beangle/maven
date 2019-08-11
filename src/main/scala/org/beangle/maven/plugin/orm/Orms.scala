@@ -42,7 +42,7 @@ object Orms {
   add("org.beangle.data", "beangle-data-jdbc_2.13", DataVersion)
   add("org.beangle.data", "beangle-data-orm_2.13", DataVersion)
   add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
-  add("org.javassist", "javassist", "3.20.0-GA")
+  add("org.javassist", "javassist", "3.25.0-GA")
   add("org.slf4j", "slf4j-api", "1.7.25")
   add("ch.qos.logback", "logback-core", "1.2.2")
   add("ch.qos.logback", "logback-classic", "1.2.2")
