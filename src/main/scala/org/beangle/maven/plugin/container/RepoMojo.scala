@@ -55,9 +55,9 @@ class RepoMojo extends AbstractMojo {
     }
     val projectRepoDir =
       if (null == project.getParent) {
-        project.getBuild.getDirectory + "/repository"
+        project.getBuild.getDirectory + / +"repository"
       } else {
-        project.getParent.getBuild.getDirectory + "/repository"
+        project.getParent.getBuild.getDirectory + / + "repository"
       }
 
     new File(projectRepoDir).mkdirs()
@@ -95,12 +95,12 @@ class RepoMojo extends AbstractMojo {
         val target = projectRepo.file(artifact)
         if (!target.exists()) {
           Files.copy(src, target)
-          val location = Strings.substringAfterLast(project.getBuild.getDirectory, "/") + "/repository" +
+          val location = Strings.substringAfterLast(project.getBuild.getDirectory, /) + / +"repository" +
             Strings.substringAfterLast(target.getAbsolutePath, "repository")
           getLog.info(s"Copy to $location")
         }
       } else {
-        getLog.error("Cannot find " + src.getAbsolutePath)
+        getLog.warn("Cannot find " + src.getAbsolutePath)
       }
     }
   }

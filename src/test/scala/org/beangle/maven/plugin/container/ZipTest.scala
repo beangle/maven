@@ -25,8 +25,11 @@ import org.beangle.maven.plugin.util.ZipUtils
 object ZipTest {
 
   def main(args: Array[String]): Unit = {
-    ZipUtils.zip(new File("/tmp/repository"),
-      new File("/tmp/repository.zip"))
+    if (args.length != 2) {
+      println("Usage:ZipTest folder target.zip")
+      return
+    }
+    ZipUtils.zip(new File(args(0)), new File(args(1)))
   }
 
 }

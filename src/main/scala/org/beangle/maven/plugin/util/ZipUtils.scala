@@ -53,7 +53,7 @@ object ZipUtils extends Logging {
       val currentFile = new File(dir.getAbsolutePath + / + a)
       var entryName = root.toURI.relativize(currentFile.toURI).getPath
       if (currentFile.isDirectory) {
-        if (!entryName.endsWith("/")) {
+        if (!entryName.endsWith("/")) { //must be /,not platform dependency \
           entryName = entryName + "/"
         }
         val entry = new ZipArchiveEntry(entryName)
