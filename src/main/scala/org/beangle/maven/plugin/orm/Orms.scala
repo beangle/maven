@@ -31,19 +31,19 @@ import scala.jdk.javaapi.CollectionConverters.asScala
 object Orms {
 
   private val dependencies: ju.Map[String, Artifact] = new ju.HashMap[String, Artifact]
-  val CommonsVersion = "5.1.8"
-  val DataVersion = "5.1.8"
-  val ScalaVersion = "2.13.0"
-  add("org.scala", "scala-library", ScalaVersion)
-  add("org.scala", "scala-reflect", ScalaVersion)
-  add("org.beangle.commons", "beangle-commons-core_2.13", CommonsVersion)
-  add("org.beangle.commons", "beangle-commons-text_2.13", CommonsVersion)
-  add("org.beangle.data", "beangle-data-model_2.13", DataVersion)
-  add("org.beangle.data", "beangle-data-jdbc_2.13", DataVersion)
-  add("org.beangle.data", "beangle-data-orm_2.13", DataVersion)
-  add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
-  add("org.javassist", "javassist", "3.25.0-GA")
-  add("org.slf4j", "slf4j-api", "1.7.25")
+//  val CommonsVersion = "5.1.8"
+//  val DataVersion = "5.1.8"
+//  val ScalaVersion = "2.13.0"
+//  add("org.scala", "scala-library", ScalaVersion)
+//  add("org.scala", "scala-reflect", ScalaVersion)
+//  add("org.beangle.commons", "beangle-commons-core_2.13", CommonsVersion)
+//  add("org.beangle.commons", "beangle-commons-text_2.13", CommonsVersion)
+//  add("org.beangle.data", "beangle-data-model_2.13", DataVersion)
+//  add("org.beangle.data", "beangle-data-jdbc_2.13", DataVersion)
+//  add("org.beangle.data", "beangle-data-orm_2.13", DataVersion)
+//  add("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final")
+//  add("org.javassist", "javassist", "3.25.0-GA")
+//  add("org.slf4j", "slf4j-api", "1.7.25")
   add("ch.qos.logback", "logback-core", "1.2.2")
   add("ch.qos.logback", "logback-classic", "1.2.2")
 
