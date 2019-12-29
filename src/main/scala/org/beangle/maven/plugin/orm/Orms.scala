@@ -33,6 +33,7 @@ object Orms {
   private val dependencies: ju.Map[String, Artifact] = new ju.HashMap[String, Artifact]
   add("ch.qos.logback", "logback-core", "1.2.2")
   add("ch.qos.logback", "logback-classic", "1.2.2")
+  add("org.slf4j", "slf4j-api", "1.7.25")
 
   def classpath(project: MavenProject, localRepository: String): String = {
     val classPath = new StringBuilder(project.getBuild.getOutputDirectory)
