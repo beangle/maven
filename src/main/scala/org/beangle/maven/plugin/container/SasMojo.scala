@@ -45,7 +45,6 @@ class SasMojo extends AbstractMojo {
       return
     }
     if (project.getPackaging != "war") {
-      getLog.info("Container Dependency Generation supports only war project!")
       return
     }
     val folder = project.getBuild.getOutputDirectory + "/META-INF/beangle"

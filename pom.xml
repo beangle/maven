@@ -8,14 +8,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.beangle.maven</groupId>
   <artifactId>beangle-maven-plugin</artifactId>
-  <version>0.3.23</version>
+  <version>0.3.24</version>
   <packaging>maven-plugin</packaging>
   <name>Beangle Maven Plugin</name>
 
   <properties>
     <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.plugin</bundle.namespace>
-    <beangle.repo.version>0.0.13</beangle.repo.version>
+    <beangle.repo.version>0.0.15</beangle.repo.version>
     <mvn.version>3.6.0</mvn.version>
   </properties>
 
