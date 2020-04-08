@@ -34,10 +34,14 @@ class WebxmlMojo extends AbstractMojo {
 
   def execute(): Unit = {
     if (project.getPackaging == "war") {
-      val web_inf = s"${project.getBasedir}/target/${project.getArtifactId}-${project.getVersion}/WEB-INF"
-      val webxml = new File(web_inf + "/web.xml")
-      if (!webxml.exists()) {
-        Dirs.on(web_inf).mkdirs()
+      val webappXml = s"${project.getBasedir}/src/main/webapp/WEB-INF/web.xml"
+      if (new File(webappXml).exists()) {
+        getLog.info("Ignore web.xml generation.")
+      } else {
+        getLog.info("Generate web.xml")
+        val buildWebInf = s"${project.getBasedir}/target/${project.getArtifactId}-${project.getVersion}/WEB-INF"
+        Dirs.on(buildWebInf).mkdirs()
+        val webxml = new File(buildWebInf + "/web.xml")
         val os = new FileOutputStream(webxml)
         IOs.copy(ClassLoaders.getResourceAsStream("sas/web.xml").get, os)
         IOs.close(os)
