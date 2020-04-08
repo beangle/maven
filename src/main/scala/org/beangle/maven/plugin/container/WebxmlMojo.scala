@@ -38,7 +38,9 @@ class WebxmlMojo extends AbstractMojo {
       val webxml = new File(web_inf + "/web.xml")
       if (!webxml.exists()) {
         Dirs.on(web_inf).mkdirs()
-        IOs.copy(ClassLoaders.getResourceAsStream("sas/web.xml").get, new FileOutputStream(webxml))
+        val os = new FileOutputStream(webxml)
+        IOs.copy(ClassLoaders.getResourceAsStream("sas/web.xml").get, os)
+        IOs.close(os)
       }
     }
   }
