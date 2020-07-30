@@ -24,19 +24,11 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
-import org.beangle.commons.io.{Dirs, Files}
+import org.beangle.commons.io.Files
 import org.beangle.commons.io.Files./
 import org.beangle.commons.lang.Strings
-import org.beangle.repo.artifact.{Artifact, Repo}
-import org.apache.commons.compress.archivers.ArchiveStreamFactory
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.Strings
-import java.io.FileInputStream
-import java.io.FileOutputStream
-
 import org.beangle.maven.plugin.util.ZipUtils
+import org.beangle.repo.artifact.{Artifact, ArtifactDownloader, Repo}
 
 import scala.jdk.javaapi.CollectionConverters.asScala
 
@@ -55,7 +47,7 @@ class RepoMojo extends AbstractMojo {
     }
     val projectRepoDir =
       if (null == project.getParent) {
-        project.getBuild.getDirectory + / +"repository"
+        project.getBuild.getDirectory + / + "repository"
       } else {
         project.getParent.getBuild.getDirectory + / + "repository"
       }
@@ -76,26 +68,31 @@ class RepoMojo extends AbstractMojo {
     }
     val localRepo = Repo.local(settings.getLocalRepository)
     val projectRepo = Repo.local(projectRepoDir)
-    copy(artifacts,localRepo,projectRepo)
+    copy(artifacts, localRepo, projectRepo)
 
-    val poms= artifacts.map(_.packaging("pom"))
-    copy(poms,localRepo,projectRepo)
+    val poms = artifacts.map(_.packaging("pom"))
+    copy(poms, localRepo, projectRepo)
 
-    val sha1s= artifacts.map(_.sha1)
-    copy(sha1s,localRepo,projectRepo)
+    val sha1s = artifacts.map(_.sha1)
+    copy(sha1s, localRepo, projectRepo)
 
-    ZipUtils.zip(new File(projectRepoDir),new File(projectRepoDir+".zip"))
+    ZipUtils.zip(new File(projectRepoDir), new File(projectRepoDir + ".zip"))
     getLog.info(s"Project reposistory is generated in $projectRepoDir")
   }
 
-  def copy(artifacts:collection.Seq[Artifact],localRepo:Repo.Local,projectRepo:Repo.Local):Unit={
+  def copy(artifacts: collection.Seq[Artifact], localRepo: Repo.Local, projectRepo: Repo.Local): Unit = {
+    val missings = artifacts.filter(x => !localRepo.file(x).exists)
+    if (missings.nonEmpty) {
+      val downloader = new ArtifactDownloader(new Repo.Remote, localRepo)
+      downloader.download(missings)
+    }
     artifacts foreach { artifact =>
       val src = localRepo.file(artifact)
       if (src.exists()) {
         val target = projectRepo.file(artifact)
         if (!target.exists()) {
           Files.copy(src, target)
-          val location = Strings.substringAfterLast(project.getBuild.getDirectory, /) + / +"repository" +
+          val location = Strings.substringAfterLast(project.getBuild.getDirectory, /) + / + "repository" +
             Strings.substringAfterLast(target.getAbsolutePath, "repository")
           getLog.info(s"Copy to $location")
         }
@@ -104,7 +101,6 @@ class RepoMojo extends AbstractMojo {
       }
     }
   }
-
 
 
 }
