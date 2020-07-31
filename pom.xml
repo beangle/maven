@@ -15,11 +15,11 @@
   <properties>
     <bundle.symbolicName>org.beangle.maven.plugin</bundle.symbolicName>
     <bundle.namespace>org.beangle.maven.plugin</bundle.namespace>
-    <beangle.repo.version>0.0.17-SNAPSHOT</beangle.repo.version>
+    <beangle.repo.version>0.0.17</beangle.repo.version>
     <mvn.version>3.6.0</mvn.version>
   </properties>
 
-  <description>
+  <description>:
     Beangle Maven Plugin
   </description>
 
