@@ -41,11 +41,13 @@ class RepoMojo extends AbstractMojo {
   @Parameter(defaultValue = "${settings}", readonly = true)
   private var settings: Settings = _
 
+  @Parameter(property = "target")
+  private var target:String=_
+
   def execute(): Unit = {
     if (project.getPackaging != "war" && project.getPackaging != "jar") {
       return
     }
-    val target = System.getProperty("target")
     val projectRepoDir =
       if (null == target) {
         if (null == project.getParent) {
@@ -96,9 +98,7 @@ class RepoMojo extends AbstractMojo {
         val target = projectRepo.file(artifact)
         if (!target.exists()) {
           Files.copy(src, target)
-          val location = Strings.substringAfterLast(project.getBuild.getDirectory, /) + / + "repository" +
-            Strings.substringAfterLast(target.getAbsolutePath, "repository")
-          getLog.info(s"Copy to $location")
+          getLog.info(s"Copy $artifact")
         }
       } else {
         getLog.warn("Cannot find " + src.getAbsolutePath)
