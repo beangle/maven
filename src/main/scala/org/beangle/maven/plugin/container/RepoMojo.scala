@@ -45,13 +45,17 @@ class RepoMojo extends AbstractMojo {
     if (project.getPackaging != "war" && project.getPackaging != "jar") {
       return
     }
+    val target = System.getProperty("target")
     val projectRepoDir =
-      if (null == project.getParent) {
-        project.getBuild.getDirectory + / + "repository"
+      if (null == target) {
+        if (null == project.getParent) {
+          project.getBuild.getDirectory + / + "repository"
+        } else {
+          project.getParent.getBuild.getDirectory + / + "repository"
+        }
       } else {
-        project.getParent.getBuild.getDirectory + / + "repository"
+        target + / + "repository"
       }
-
     new File(projectRepoDir).mkdirs()
     val artifacts = new collection.mutable.ArrayBuffer[Artifact]
     asScala(project.getArtifacts) foreach { artifact =>
