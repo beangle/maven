@@ -24,12 +24,13 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
+import org.beangle.commons.lang.Strings
 
 /**
  * Generate ddl from orm mappings
  */
-@Mojo(name = "ddl", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-class DdlMojo extends AbstractMojo {
+@Mojo(name = "ddl-diff", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+class DdlDiffMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _
@@ -37,33 +38,56 @@ class DdlMojo extends AbstractMojo {
   @Parameter(defaultValue = "${settings}", readonly = true)
   private var settings: Settings = _
 
-  @Parameter(property = "dialect", defaultValue = "PostgreSQL,Mysql,H2,Oracle,Db2,Sqlserver")
+  @Parameter(property = "dialect", defaultValue = "postgresql")
   private var dialect: String = _
 
-  @Parameter(property = "locale", defaultValue = "zh_CN")
-  private var locale: String = _
+  @Parameter(property = "oldVersion")
+  private var oldVersion: String = _
+
+  @Parameter(property = "newVersion")
+  private var newVersion: String = _
 
   override def execute(): Unit = {
     if (project.getPackaging == "pom") {
       getLog.info("Ddl generation supports jar/war projects,Skip pom projects.")
       return
     }
+    if (Strings.isBlank(oldVersion)) {
+      getLog.warn("Specify -DoldVersion=???")
+      return
+    }
+    if (Strings.isBlank(newVersion)) {
+      getLog.warn("Specify -DnewVersion=???")
+      return
+    }
+    this.dialect = dialect.toLowerCase
     val classPath = Orms.classpath(project, settings.getLocalRepository)
     getLog.debug("Using classpath:" + Orms.simplify(classPath))
-    gen(classPath, dialect)
+    gen(classPath)
   }
 
-  def gen(classpath: String, dialectStr: String): Unit = {
-    val folder = new File(project.getBuild.getOutputDirectory + "/../db/")
+  def gen(classpath: String): Unit = {
+    val folder = new File(project.getBuild.getOutputDirectory + "/../db/" + dialect + "/migrate")
     folder.mkdirs()
     try {
-      val pb = new ProcessBuilder("java", "-cp", classpath.toString, "org.beangle.data.orm.tool.DdlGenerator",
-        dialectStr, folder.getCanonicalPath, locale)
+      val oldDbFile = new File(s"${project.getBasedir.getAbsolutePath}/src/main/resources/db/${dialect}/db-${oldVersion}.xml")
+      if (!oldDbFile.exists()) {
+        getLog.warn(s"Cannot find ${oldDbFile.getAbsolutePath}")
+        return
+      }
+      val newDbFile = new File(s"${project.getBasedir.getAbsolutePath}/src/main/resources/db/${dialect}/db-${newVersion}.xml")
+      if (!newDbFile.exists()) {
+        getLog.warn(s"Cannot find ${newDbFile.getAbsolutePath}")
+        return
+      }
+      val target = folder.getCanonicalPath + s"/${oldVersion}-${newVersion}.sql"
+      val pb = new ProcessBuilder("java", "-cp", classpath.toString, "org.beangle.data.jdbc.meta.Diff",
+        oldDbFile.getAbsolutePath, newDbFile.getAbsolutePath, target)
       getLog.debug(pb.command().toString)
       pb.inheritIO()
       val pro = pb.start()
       pro.waitFor()
-      getLog.info("DDl generated in " + folder.getCanonicalPath)
+      getLog.info("DDl diff generated in " + target)
     } catch {
       case e: Exception => e.printStackTrace()
     }
