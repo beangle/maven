@@ -63,7 +63,12 @@ class DdlMojo extends AbstractMojo {
       pb.inheritIO()
       val pro = pb.start()
       pro.waitFor()
+      val warningFile = new File(folder.getCanonicalPath + "/warnings.txt")
+      val hasWarning = warningFile.exists()
       getLog.info("DDl generated in " + folder.getCanonicalPath)
+      if (hasWarning) {
+        getLog.warn("Found some warnings in " + warningFile.getCanonicalPath)
+      }
     } catch {
       case e: Exception => e.printStackTrace()
     }
