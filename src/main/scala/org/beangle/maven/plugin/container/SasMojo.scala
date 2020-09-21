@@ -70,6 +70,7 @@ class SasMojo extends AbstractMojo {
         if (scopeMatched) {
           included = includes.exists(d => d.matches(curr))
           if (groupId.startsWith("javax.servlet")) included = false
+          if (groupId.startsWith("jakarta.servlet")) included = false
           if (included) {
             included &= (!excludes.exists(d => d.matches(curr)))
           }
