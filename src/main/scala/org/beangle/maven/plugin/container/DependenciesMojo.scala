@@ -18,64 +18,36 @@
  */
 package org.beangle.maven.plugin.container
 
-import java.io.{File, FileWriter, IOException}
-
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 
+import java.io.{File, FileWriter, IOException}
 import scala.jdk.javaapi.CollectionConverters.asScala
 
-@Mojo(name = "sas", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-class SasMojo extends AbstractMojo {
+@Mojo(name = "dependencies", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+class DependenciesMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _
 
-  @Parameter(property = "dependenciesIncludes")
-  private var dependencyIncludes: String = "*:*"
-
-  @Parameter(property = "dependencyExcludes")
-  private var dependencyExcludes: String = _
-
   private val fileName = "dependencies"
 
+  private val inlcuded=Set("provided","compile","runtime")
+
   def execute(): Unit = {
-    if ("true" == System.getProperty("skipSas")) {
-      return
-    }
-    if (project.getPackaging != "war") {
-      return
-    }
-    val folder = project.getBuild.getOutputDirectory + "/META-INF/beangle"
+    val folder = project.getBuild.getOutputDirectory + "/META-INF/beangle/"
     new File(folder).mkdirs()
-    val file = new File(folder + "/" + fileName)
+    val file = new File(folder + fileName)
     file.delete()
     try {
       file.createNewFile()
       val provideds = new collection.mutable.ArrayBuffer[String]
-      val excludes = convert(dependencyExcludes)
-      val includes = convert(dependencyIncludes)
 
       asScala(project.getArtifacts) foreach { artifact =>
-        val groupId = artifact.getGroupId
         val str = artifact.toString
         val scope = artifact.getScope
-        val curr = new Dependency(groupId, artifact.getArtifactId)
-        var scopeMatched = scope == "provided"
-        if (!scopeMatched && !artifact.getVersion.endsWith("SNAPSHOT")) {
-          if (scope == "runtime" || scope == "compile") scopeMatched = true
-        }
-        var included = false
-        if (scopeMatched) {
-          included = includes.exists(d => d.matches(curr))
-          if (groupId.startsWith("javax.servlet")) included = false
-          if (groupId.startsWith("jakarta.servlet")) included = false
-          if (included) {
-            included &= (!excludes.exists(d => d.matches(curr)))
-          }
-        }
-        if (scopeMatched && included) {
+        if (inlcuded.contains(scope)) {
           provideds += str.replace(":jar", "").replace(":" + scope, "")
         }
       }

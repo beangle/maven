@@ -29,7 +29,7 @@ import org.beangle.commons.io.Files
 import org.beangle.commons.lang.time.Stopwatch
 import org.beangle.commons.lang.{Consoles, Strings}
 import org.beangle.maven.plugin.util.Projects
-import org.beangle.repo.artifact.{Artifact, Diff, Layout, Repo}
+import org.beangle.boot.artifact.{Artifact, Diff, Layout, Repo}
 
 @Mojo(name = "diff", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 class DiffMojo extends AbstractMojo {
