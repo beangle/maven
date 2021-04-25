@@ -28,7 +28,7 @@ import org.beangle.commons.io.Files
 import org.beangle.commons.io.Files./
 import org.beangle.commons.lang.Strings
 import org.beangle.maven.plugin.util.ZipUtils
-import org.beangle.repo.artifact.{Artifact, ArtifactDownloader, Repo}
+import org.beangle.boot.artifact.{Artifact, ArtifactDownloader, Repo}
 
 import scala.jdk.javaapi.CollectionConverters.asScala
 
@@ -89,7 +89,7 @@ class RepoMojo extends AbstractMojo {
   def copy(artifacts: collection.Seq[Artifact], localRepo: Repo.Local, projectRepo: Repo.Local): Unit = {
     val missings = artifacts.filter(x => !localRepo.file(x).exists)
     if (missings.nonEmpty) {
-      val downloader = new ArtifactDownloader(new Repo.Remote, localRepo)
+      val downloader = new ArtifactDownloader(new Repo.Remote, localRepo,true)
       downloader.download(missings)
     }
     artifacts foreach { artifact =>
