@@ -43,7 +43,7 @@ class WebxmlMojo extends AbstractMojo {
         Dirs.on(buildWebInf).mkdirs()
         val webxml = new File(buildWebInf + "/web.xml")
         val os = new FileOutputStream(webxml)
-        IOs.copy(ClassLoaders.getResourceAsStream("sas/web.xml").get, os)
+        IOs.copy(ClassLoaders.getResourceAsStream("bas/web.xml").get, os)
         IOs.close(os)
       }
     }
