@@ -106,5 +106,4 @@ class RepoMojo extends AbstractMojo {
     }
   }
 
-
 }

@@ -18,16 +18,15 @@
  */
 package org.beangle.maven.plugin.container
 
-import java.io.{File, FileWriter, IOException}
-
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.{LifecyclePhase, Mojo, Parameter, ResolutionScope}
 import org.apache.maven.project.MavenProject
 
+import java.io.{File, FileWriter, IOException}
 import scala.jdk.javaapi.CollectionConverters.asScala
 
-@Mojo(name = "sas", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-class SasMojo extends AbstractMojo {
+@Mojo(name = "bas", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+class BasMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private var project: MavenProject = _
@@ -41,10 +40,10 @@ class SasMojo extends AbstractMojo {
   private val fileName = "dependencies"
 
   def execute(): Unit = {
-    if ("true" == System.getProperty("skipSas")) {
+    if ("true" == System.getProperty("skipBas")) {
       return
     }
-    if (project.getPackaging != "war") {
+    if (!(project.getPackaging.equals("war") || project.getPackaging.equals("jar"))) {
       return
     }
     val folder = project.getBuild.getOutputDirectory + "/META-INF/beangle"
